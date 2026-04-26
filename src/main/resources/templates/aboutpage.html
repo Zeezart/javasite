@@ -1,640 +1,1099 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
     <title>About Us - JustJava</title>
     <meta
-      name="description"
-      content="Learn about JustJava - We help start-ups and scale-ups build, launch, and maintain reliable software."
+            name="description"
+            content="Learn about JustJava - We help start-ups and scale-ups build, launch, and maintain reliable software."
     />
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+            rel="stylesheet"
     />
+    <link href="https://fonts.cdnfonts.com/css/creato-display" rel="stylesheet">
 
-    <!-- Tailwind Config -->
     <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ["Inter", "sans-serif"],
-            },
-            colors: {
-              java: {
-                blue: "#2563eb",
-                purple: "#8b5cf6",
-                navy: "#0f172a",
-                lightBlue: "#3b82f6",
-                green: "#16a34a",
-                lime: "#a3e635",
-                pink: "#ec4899",
-                orange: "#f97316",
+        tailwind.config = {
+          theme: {
+            extend: {
+              fontFamily: {
+                sans: ["Inter", "sans-serif"],
+              },
+              colors: {
+                java: {
+                  blue: "#2563eb",
+                  purple: "#8b5cf6",
+                  navy: "#0f172a",
+                  lightBlue: "#3b82f6",
+                  green: "#16a34a",
+                  lime: "#a3e635",
+                  pink: "#ec4899",
+                  orange: "#f97316",
+                },
               },
             },
           },
-        },
-      };
+        };
     </script>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
     <style>
-      body {
-        font-family: "Inter", sans-serif;
-      }
-
-      .text-gradient {
-        background: linear-gradient(135deg, #2563eb 0%, #8b5cf6 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-      }
-
-
-      .gradient-bg {
-        background: linear-gradient(135deg, #2563eb 0%, #8b5cf6 100%);
-      }
-
-      .gradient-border {
-        padding: 2px;
-        border-radius: 1rem;
-      }
-
-      .gradient-border-inner {
-        background: white;
-        border-radius: calc(1rem - 2px);
-      }
-
-      .card-hover {
-        transition: all 0.3s ease;
-      }
-
-      .card-hover:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-      }
-
-      /* Mobile menu */
-      .mobile-menu {
-        display: none;
-      }
-
-      .mobile-menu.active {
-        display: block;
-      }
-
-       /* Philosophy card styling */
-       .philosophy-card {
-        background: white;
-        border-radius: 16px;
-        padding: 24px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-      }
-
-      .philosophy-card.primary {
-        background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
-        color: white;
-      }
-
-      @media (max-width: 768px) {
-        .desktop-nav {
-          display: none;
+        /* Base lock to prevent horizontal shifting */
+        * {
+          box-sizing: border-box;
+          margin: 0;
+          padding: 0;
         }
-        .mobile-menu-btn {
-          display: block;
+
+        html, body {
+          max-width: 100vw;
+          overflow-x: hidden;
         }
-      }
 
-      @media (min-width: 769px) {
-        .mobile-menu-btn {
-          display: none;
+        body {
+          font-family: 'Creato Display', "Inter", sans-serif;
+          background: #F8F9FB;
+          color: #070F29;
         }
-      }
 
-      .horlin {
-        width: 84.5%;
-        margin: auto;
-        height: 1px;
-        background-color: black;
-      }
+        /* --- Navbar Standard Styles --- */
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .logout-link {
+            color: #ff6b6b;
+            font-size: 0.9rem;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .admin-user-text {
+            color: #070F29;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            padding: 20px 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            background: #EEF2F7;
+            box-sizing: border-box;
+        }
+        .nav-container {
+            width: 1720px;
+            max-width: 100%;
+            height: 69px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            width: 200px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+        }
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .nav-items-wrapper {
+            width: 531px;
+            height: 69px;
+            background: #EBEBEB;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 100px;
+            display: flex;
+            align-items: center;
+            padding: 8px 10px;
+            box-sizing: border-box;
+            gap: 24px;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            width: 100%;
+            justify-content: center;
+        }
+        .nav-item {
+            font-family: 'Creato Display', sans-serif;
+            font-weight: 500;
+            font-size: 18px;
+            text-decoration: none;
+            color: #070F29;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 53px;
+            border-radius: 50px;
+            gap: 8px;
+            transition: all 300ms ease-out;
+            position: relative;
+        }
+        .nav-item:hover, .nav-item.active {
+            background: #F5F5F5;
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            background-image: linear-gradient(90deg, #255BEC 0%, #780AFF 100%);
+        }
+        .book-call-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 153px;
+            height: 48px;
+            padding: 8px 16px;
+            box-sizing: border-box;
+            border-radius: 100px;
+            background: linear-gradient(90deg, #255BEC 0%, #780AFF 100%);
+            text-decoration: none;
+        }
+        .btn-text {
+            font-family: 'Creato Display', sans-serif;
+            font-weight: 500;
+            font-size: 18px;
+            line-height: 1;
+            color: #FFFFFF;
+            letter-spacing: 0%;
+        }
 
-      .horlin2 {
-        margin: auto;
-        height: 2.2px;
-        background-color: black;
-      }
+        /* Mobile Nav Base Settings */
+        .mobile-nav {
+            display: none;
+        }
+        .mobile-menu-dropdown {
+            display: none;
+        }
 
-     
+        /* Responsive Mobile Navbar Layout */
+        @media (max-width: 768px) {
+            .desktop-nav {
+                display: none !important;
+            }
 
-      .pod-philosophy-section {
-    padding: 80px 20px;
-   
-}
+            .navbar {
+                padding: 16px 24px;
+                height: 80px;
+            }
 
-.pod-image-container {
-    width: 100%;
-    max-width: 1200px;
-    margin: 40px auto 0;
-}
+            .mobile-nav {
+                display: flex;
+                width: 100%;
+                justify-content: space-between;
+                align-items: center;
+            }
 
-.pod-philosophy-image {
-    width: 100%;
-    height: auto;
-    display: block;
-}
+            .mobile-toggle-btn {
+                width: 48px;
+                height: 48px;
+                background-color: #FFFFFF;
+                border-radius: 50%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border: none;
+                cursor: pointer;
+                outline: none;
+                box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
+                flex-shrink: 0;
+            }
 
+            .mobile-logo {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-grow: 1;
+            }
 
+            .mobile-logo img {
+                height: 38px;
+                object-fit: contain;
+            }
 
-      /* Core values grid */
-      .values-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 24px;
-      }
+            .mobile-call-btn {
+                width: 48px;
+                height: 48px;
+                border-radius: 50%;
+                background: linear-gradient(90deg, #255BEC 0%, #780AFF 100%);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                text-decoration: none;
+                box-shadow: 0px 4px 10px rgba(37, 91, 236, 0.2);
+                flex-shrink: 0;
+            }
 
-      @media (max-width: 768px) {
+            .mobile-menu-dropdown {
+                position: fixed;
+                top: 80px;
+                left: 0;
+                width: 100%;
+                background-color: #ffffff;
+                border-bottom: 1px solid #f3f4f6;
+                z-index: 999;
+                padding: 20px 24px;
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            }
+
+            .mobile-menu-dropdown .nav-links {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .mobile-menu-dropdown .nav-item {
+                height: auto;
+                padding: 8px 0;
+                font-size: 20px;
+                border-radius: 0;
+                justify-content: flex-start;
+                width: 100%;
+            }
+        }
+
+        /* --- Hero Section Specific Styles --- */
+        .hero-section {
+          position: relative;
+          padding-top: 160px;
+          padding-bottom: 60px;
+          overflow: visible;
+        }
+
+        /* Remove Desktop Vector completely */
+        .hero-bg-vector-desktop {
+            display: none !important;
+        }
+
+        .hero-bg-vector-mobile {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .hero-bg-vector-mobile {
+                display: block;
+                position: absolute;
+                width: 140%;
+                left: -20%;
+                height: 260px;
+                top: 340px; /* Positioned to perfectly cross behind the CTA button */
+                z-index: 0;
+                pointer-events: none;
+            }
+            .hero-bg-vector-mobile svg {
+                width: 100%;
+                height: 100%;
+                preserveAspectRatio: none;
+            }
+        }
+
+        /* --- Global Styles --- */
+        .text-gradient {
+          background: linear-gradient(135deg, #2563eb 0%, #8b5cf6 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+
+        .gradient-bg {
+          background: linear-gradient(135deg, #2563eb 0%, #8b5cf6 100%);
+        }
+
+        .gradient-border {
+          padding: 2px;
+          border-radius: 1rem;
+        }
+
+        .gradient-border-inner {
+          background: white;
+          border-radius: calc(1rem - 2px);
+        }
+
+        .card-hover {
+          transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Philosophy card styling */
+        .philosophy-card {
+          background: white;
+          border-radius: 24px;
+          padding: 40px;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+        }
+
+        .philosophy-card.primary {
+          background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+          color: white;
+        }
+
+        .pod-image-container {
+          width: 100%;
+          max-width: 1200px;
+          margin: 40px auto 0;
+        }
+
+        /* Core values grid */
         .values-grid {
-          grid-template-columns: 1fr;
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 24px;
         }
-      }
 
-      .value-card {
-        background: white;
-        border-radius: 16px;
-        padding: 24px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-      }
+        @media (max-width: 768px) {
+          .values-grid {
+            grid-template-columns: 1fr;
+          }
+        }
 
-      /* Pod philosophy diagram */
-      .pod-diagram {
-        position: relative;
-        padding: 40px;
-      }
+        .value-card {
+          background: white;
+          border-radius: 24px;
+          padding: 32px;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
 
-      .pod-node {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 8px;
-      }
+        /* CTA banner */
+        .cta-banner {
+          background: white;
+          border-radius: 40px;
+          text-align: center;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
 
-      .pod-icon {
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
+        /* Founder section */
+        .founder-quote {
+          background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+          color: white;
+          border-radius: 16px;
+          padding: 24px;
+        }
 
-      /* CTA banner */
-      .cta-banner {
-        background: white;
-        border-radius: 24px;
-        padding: 48px;
-        text-align: center;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-      }
+        /* ====================================================
+           LINE-BY-LINE SMOOTH TEXT REVEAL ANIMATION
+        ==================================================== */
+        .reveal-line {
+          display: block;
+          width: max-content;
+          background: linear-gradient(90deg, #255BEC 0%, #780AFF 50%, rgba(7, 15, 41, 0.3) 50.1%, rgba(7, 15, 41, 0.3) 100%);
+          background-size: 200% 100%;
+          background-position: 100% 0;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          color: transparent;
+          transition: background-position 0.9s linear;
+          max-width: 100%;
+          white-space: normal;
+        }
 
-      /* Founder section */
-      .founder-quote {
-        background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
-        color: white;
-        border-radius: 12px;
-        padding: 16px 20px;
-      }
+        .scroll-reveal-animate.scrolled .reveal-line {
+          background-position: 0 0;
+        }
+
+        .scroll-reveal-animate.scrolled .reveal-line:nth-of-type(1) { transition-delay: 0s; }
+        .scroll-reveal-animate.scrolled .reveal-line:nth-of-type(2) { transition-delay: 0.9s; }
+        .scroll-reveal-animate.scrolled .reveal-line:nth-of-type(3) { transition-delay: 1.8s; }
+        .scroll-reveal-animate.scrolled .reveal-line:nth-of-type(4) { transition-delay: 2.7s; }
+
+        /* For Mobile Inline Block Reveal */
+        .reveal-text {
+          background: linear-gradient(90deg, #255BEC 0%, #780AFF 50%, rgba(7, 15, 41, 0.3) 50.1%, rgba(7, 15, 41, 0.3) 100%);
+          background-size: 200% 100%;
+          background-position: 100% 0;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          color: transparent;
+          transition: background-position 1.5s ease-out;
+        }
+        .scroll-reveal-animate.scrolled .reveal-text {
+          background-position: 0 0;
+        }
+
+        /* Base Consult btn CSS */
+        .consult-btn {
+          display: inline-flex;
+          align-items: center;
+          background: linear-gradient(90deg, #255bec 0%, #780aff 100%);
+          border-radius: 9999px;
+          color: white;
+          max-width: max-content;
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+          transition: opacity 0.3s ease, transform 0.2s ease;
+          text-decoration: none;
+        }
+        .consult-btn:hover {
+          opacity: 0.9;
+          transform: translateY(-2px);
+        }
+        .consult-btn .text-wrapper {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          text-align: left;
+        }
+        .consult-btn .sub-text {
+          opacity: 0.8;
+          font-family: 'Creato Display', sans-serif;
+          color: white;
+          line-height: 1.2;
+        }
+        .consult-btn .main-text {
+          font-family: 'Creato Display', sans-serif;
+          color: white;
+          line-height: 1.2;
+        }
+
     </style>
-  </head>
-  <body style="background-color: #eef2f7 !important" class="text-gray-900 antialiased">
-   
+</head>
+<body class="antialiased">
 
-    <!-- Navigation -->
-    <nav class="w-full py-4 px-6 md:px-12 flex items-center justify-between relative z-50">
-      <div style="margin-left: 60px !important" class="flex items-center gap-2">
+<nav class="navbar">
+    <div class="nav-container desktop-nav">
+        <div class="logo">
+            <a th:href="${#authorization.expression('hasRole(''ADMIN'')')} ? '/admin' : '/public'">
+                <img th:src="@{/images/justjlogo.png}" alt="JustJava Logo" />
+            </a>
+        </div>
 
-        <a th:href="${#authorization.expression('hasRole(''ADMIN'')')} ? '/admin' : '/public'">
-          <img style="height: 30px" src="/images/justjlogo.png" alt="JustJava Logo" />
-        </a>
+        <div class="nav-items-wrapper">
+            <div class="nav-links">
+                <a th:href="@{/services}" class="nav-item">Services</a>
+                <a th:href="@{/designos}" class="nav-item">DesignOS</a>
+                <a th:href="@{/about}" class="nav-item active">About us</a>
+                <a th:href="@{/insights}" class="nav-item">Insights</a>
+            </div>
+        </div>
 
+        <div class="nav-actions">
+            <a href="#" class="book-call-btn">
+                <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17.2499 12.0101V15.3101C17.2499 16.5401 16.1599 17.4801 14.9399 17.3101C7.59991 16.2901 1.78991 10.4801 0.769912 3.14009C0.599912 1.92009 1.53991 0.830089 2.76991 0.830089H6.06991C6.30643 0.829011 6.53568 0.911805 6.71693 1.06376C6.89818 1.21572 7.01971 1.42701 7.05991 1.66009L7.44991 3.85009C7.58991 4.62009 7.26991 5.40009 6.62991 5.85009L4.77991 7.44009C6.20991 9.85009 8.23991 11.8601 10.6599 13.2801L12.2299 11.4601C12.6799 10.8201 13.4599 10.5001 14.2299 10.6401L16.4199 11.0301C16.8999 11.1201 17.2499 11.5301 17.2499 12.0201V12.0101Z" fill="white" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M17.1198 7.11C17.1198 5.48953 16.476 3.93542 15.3302 2.78958C14.1843 1.64373 12.6302 1 11.0098 1M13.6798 7.11C13.6798 5.63 12.4798 4.44 11.0098 4.44" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="btn-text" style="color: #FFFFFF;">Book a call</span>
+            </a>
 
-      </div>
-
-      <div
-        style="border-radius: 15px; background-color: #ebebeb; width: 390px; height: 49px;"
-        class="hidden md:flex items-center gap-8 desktop-nav"
-      >
-        <a style="margin-left: 15px !important" href="#" class="text-gray-500 hover:text-gray-900 transition-colors">Services</a>
-        <a th:href="@{/designos}" class="text-gray-500 hover:text-gray-900 transition-colors">DesignOS</a>
-        <a href="#" class="text-gray-900 font-medium transition-colors">About us</a>
-        <a href="#" class="text-gray-500 hover:text-gray-900 transition-colors">Insights</a>
-      </div>
-
-      <button
-        style="background-color: blue; color: white"
-        class="border border-gray-200 text-gray-900 px-5 py-2.5 rounded-full font-medium hover:bg-gray-50 transition-colors inline-flex items-center gap-2 text-sm"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-        </svg>
-        Book a call
-      </button>
-
-      <!-- Mobile menu button -->
-      <button class="mobile-menu-btn md:hidden p-2" onclick="toggleMobileMenu()">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="3" y1="12" x2="21" y2="12"></line>
-          <line x1="3" y1="6" x2="21" y2="6"></line>
-          <line x1="3" y1="18" x2="21" y2="18"></line>
-        </svg>
-      </button>
-    </nav>
-
-    <!-- Mobile Menu -->
-    <div id="mobileMenu" class="mobile-menu bg-white border-b border-gray-100 px-6 py-4 md:hidden">
-      <div class="flex flex-col gap-4">
-        <a href="#" class="text-gray-500 hover:text-gray-900 transition-colors">Services</a>
-        <a th:href="@{/designos}" class="text-gray-500 hover:text-gray-900 transition-colors">DesignOS</a>
-        <a href="#" class="text-gray-900 font-medium transition-colors">About us</a>
-        <a href="#" class="text-gray-500 hover:text-gray-900 transition-colors">Insights</a>
-      </div>
+            <div th:if="${isAdminView}" sec:authorize="hasRole('ADMIN')" style="display: flex; gap: 10px; align-items: center;">
+                <span class="admin-user-text">Admin Mode</span>
+                <a href="/logout" class="logout-link">Logout</a>
+            </div>
+        </div>
     </div>
 
-    <!-- Hero Section -->
-    <section class="relative px-6 md:px-12 py-12 overflow-visible">
-      <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center relative z-10">
-        <!-- Left side - Image -->
-        <div class="relative">
-          <div class="relative rounded-3xl overflow-hidden shadow-2xl bg-gray-200 h-80 flex items-center justify-center">
-            <!-- PLACEHOLDER: Replace with about-hero.jpg -->
-            <img src="/images/Frame 1411067738.png" alt="Server Infrastructure" class="w-full h-full object-cover" />
-          </div>
-        </div>
-
-        <!-- Right side - Content -->
-        <div class="space-y-6">
-          <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
-            We don't just write code. We deliver systems.
-          </h1>
-          <p class="text-gray-500 text-lg max-w-md">
-            More than just a dev shop—JustJava is how serious companies build software.
-            Structured. Scalable. Secure. We operate as a true extension of your team.
-          </p>
-          <button class="gradient-bg text-white px-6 py-3 rounded-full font-medium hover:opacity-90 transition-opacity inline-flex items-center gap-2">
-            Learn more
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
+    <div class="mobile-nav">
+        <button class="mobile-toggle-btn" onclick="toggleMobileMenu()">
+            <svg id="icon-hamburger" width="15" height="7" viewBox="0 0 15 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10.37 1.5H0.75C0.335786 1.5 0 1.16421 0 0.75C0 0.335786 0.335786 0 0.75 0H10.37C10.7842 0 11.12 0.335786 11.12 0.75C11.12 1.16421 10.7842 1.5 10.37 1.5Z" fill="#070F29"/>
+                <path d="M0.75 5H13.57C13.9842 5 14.32 5.33579 14.32 5.75C14.32 6.16421 13.9842 6.5 13.57 6.5H0.75C0.335786 6.5 0 6.16421 0 5.75C0 5.33579 0.335786 5 0.75 5Z" fill="#070F29"/>
             </svg>
-          </button>
-        </div>
-      </div>
-    </section>
+            <svg id="icon-close" style="display: none;" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15.3822 16.5035L6.62228 7.7436C6.2451 7.36642 6.17678 6.82322 6.46967 6.53033C6.76256 6.23744 7.30576 6.30576 7.68294 6.68294L16.4428 15.4428C16.82 15.82 16.8883 16.3632 16.5954 16.6561C16.3025 16.949 15.7593 16.8807 15.3822 16.5035Z" fill="#070F29"/>
+                <path d="M7.09674 15.4697L16.1618 6.40456C16.4547 6.11167 16.9296 6.11167 17.2225 6.40456C17.5154 6.69745 17.5154 7.17233 17.2225 7.46522L8.1574 16.5303C7.8645 16.8232 7.38963 16.8232 7.09674 16.5303C6.80384 16.2374 6.80384 15.7626 7.09674 15.4697Z" fill="#070F29"/>
+            </svg>
+        </button>
 
-    <!-- Why Just Java Exists Section -->
-    <section class="px-6 md:px-12 py-16">
-      <div class=" mx-auto text-center">
-        
-          <h2 style="margin-bottom: 50px;" class="text-4xl md:text-5xl font-bold text-center mb-8">Why Just Java Exists</h2>
-        <p style="font-size: 40px; " class="text-java-blue text-lg md:text-xl leading-relaxed">
-          Many software fails not because of poor ideas, <br><br><br> but because of delivery chaos. Disconnected. <br><br><br> freelancers. Vague roadmaps. Missed <br><br><br> deadlines. We built Just Java to fix that.
-        </p>
-      </div>
-    </section>
-
-    <!-- Our Philosophy Section -->
-    <section class="px-6 md:px-12 py-16">
-      <div class="max-w-7xl mx-auto">
-       
-        <h2 class="text-4xl md:text-5xl font-bold text-center mb-8">Our Philosophy</h2>
-        
-        <div class="grid md:grid-cols-2 gap-8 mb-8">
-          <!-- Pod Philosophy Card (Primary) -->
-          <div class="philosophy-card primary">
-            <h3 class="text-xl font-bold mb-4">Pod Philosophy</h3>
-            <p class="opacity-90 mb-6">
-              We don't just deploy developers on retainer. Our pod system brings together the exact mix of engineers, designers, and PMs your project needs—as a unit.
-            </p>
-            <button class="bg-white text-java-blue px-4 py-2 rounded-full text-sm font-medium hover:bg-opacity-90 transition-opacity inline-flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polygon points="5 3 19 12 5 21 5 3"></polygon>
-              </svg>
-              Learn more
-            </button>
-          </div>
-
-          <!-- TailoredOS Card -->
-          <div class="philosophy-card">
-            <h3 class="text-xl font-bold mb-4">TailoredOS</h3>
-            <p class="text-gray-500 mb-6">
-              TailoredOS delivers our operating tools with design docs, approval flows, and live demos—so you always know what's being built and why.
-            </p>
-            <button class="border border-gray-200 px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors inline-flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polygon points="5 3 19 12 5 21 5 3"></polygon>
-              </svg>
-              Learn more
-            </button>
-          </div>
-        </div>
-        <p class="text-center text-gray-500 mt-12 text-sm flex items-center justify-center gap-2"><span class="text-java-blue">✱</span>This isn't just process. It's how we've never missed a go live.</p>
-        
-      </div>
-    </section>
-
-    <!-- Our Mission & Vision Section -->
-    <section class="px-6 md:px-12 py-16">
-      <div class="max-w-7xl mx-auto">
-       
-        <h2 class="text-4xl md:text-5xl font-bold text-center mb-8">Our Mission & Vision</h2>
-        
-        <div class="grid md:grid-cols-2 gap-8">
-          <!-- Our Mission Card -->
-          <div class="philosophy-card">
-            <h4 class="font-semibold mb-3 text-gray-700">Our Mission</h4>
-            <p class="text-gray-500">
-              To remove the chaos from software delivery and replace it with clarity, accountability, and measurable progress.
-            </p>
-          </div>
-
-          <!-- Our Vision Card (Primary) -->
-          <div class="philosophy-card primary">
-            <h4 class="font-semibold mb-3 opacity-80">Our Vision</h4>
-            <p class="opacity-90">
-              To become the most trusted software delivery partner for startups and scale-ups globally.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Our Core Values Section -->
-    <section class="px-6 md:px-12 py-16">
-      <div class="max-w-7xl mx-auto">
-          
-        <h2 class="text-4xl md:text-5xl font-bold text-center mb-8">Our Core values</h2>
-        
-        <div class="values-grid">
-          <!-- Value 1 -->
-          <div class="value-card">
-            <div class="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center mb-4">
-              <!-- PLACEHOLDER: Replace with icon-1.svg -->
-              <img src="/images/Vector (1).png" alt="Clean code icon" class="w-8 h-8 object-contain" />
-            </div>
-            <h4 class="font-semibold mb-2">Clean code is client respect</h4>
-            <p class="text-gray-500 text-sm">
-              Clean, maintainable code is our standard, because your project deserves to outlast any single developer.
-            </p>
-          </div>
-
-          <!-- Value 2 -->
-          <div class="value-card">
-            <div class="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center mb-4">
-              <!-- PLACEHOLDER: Replace with icon-2.svg -->
-              <img src="/images/Vector (2).png" alt="Client respect icon" class="w-8 h-8 object-contain" />
-            </div>
-            <h4 class="font-semibold mb-2">Clean code is client respect</h4>
-            <p class="text-gray-500 text-sm">
-              Clean, maintainable code is our standard, because your project deserves to outlast any single developer.
-            </p>
-          </div>
-
-          <!-- Value 3 -->
-          <div class="value-card">
-            <div class="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center mb-4">
-              <!-- PLACEHOLDER: Replace with icon-3.svg -->
-              <img src="/images/Vector (3).png" alt="Team icon" class="w-8 h-8 object-contain" />
-            </div>
-            <h4 class="font-semibold mb-2">Clean code is client respect</h4>
-            <p class="text-gray-500 text-sm">
-              Our commitment: Full transparency on blockers, so you're never left guessing.
-            </p>
-          </div>
-
-          <!-- Value 4 -->
-          <div class="value-card">
-            <div class="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center mb-4">
-              <!-- PLACEHOLDER: Replace with icon-4.svg -->
-              <img src="/images/Vector (4).png" alt="Innovation icon" class="w-8 h-8 object-contain" />
-            </div>
-            <h4 class="font-semibold mb-2">Clean code is client respect</h4>
-            <p class="text-gray-500 text-sm">
-              We stay ahead—updating skills, tools, and approaches so your product is never outdated.
-            </p>
-          </div>
+        <div class="mobile-logo">
+            <a th:href="${#authorization.expression('hasRole(''ADMIN'')')} ? '/admin' : '/public'">
+                <img th:src="@{/images/mobile-logo.png}" alt="JustJava Mobile Logo" />
+            </a>
         </div>
 
-        <!-- <p class="text-center text-gray-500 text-sm mt-8">
-          All the strong principles take
-        </p> -->
-        <p class="text-center text-gray-500 mt-12 text-sm flex items-center justify-center gap-2"><span class="text-java-blue">✱</span>No ghosting after go live</p>
-</div>
-      </div>
-    </section>
+        <a href="#" class="mobile-call-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20.2499 14.93V18.23C20.2499 19.46 19.1599 20.4 17.9399 20.23C10.5999 19.21 4.78991 13.4 3.76991 6.06001C3.59991 4.84001 4.53991 3.75001 5.76991 3.75001H9.06991C9.30643 3.74893 9.53568 3.83173 9.71693 3.98369C9.89818 4.13564 10.0197 4.34693 10.0599 4.58001L10.4499 6.77001C10.5899 7.54001 10.2699 8.32001 9.62991 8.77001L7.77991 10.36C9.20991 12.77 11.2399 14.78 13.6599 16.2L15.2299 14.38C15.6799 13.74 16.4599 13.42 17.2299 13.56L19.4199 13.95C19.8999 14.04 20.2499 14.45 20.2499 14.94V14.93Z" fill="white" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M20.1217 10.03C20.1217 8.40957 19.478 6.85547 18.3321 5.70962C17.1863 4.56377 15.6322 3.92004 14.0117 3.92004M16.6817 10.03C16.6817 8.55004 15.4817 7.36004 14.0117 7.36004" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M20.2499 14.93V18.23C20.2499 19.46 19.1599 20.4 17.9399 20.23C10.5999 19.21 4.78991 13.4 3.76991 6.06001C3.59991 4.84001 4.53991 3.75001 5.76991 3.75001H9.06991C9.30643 3.74893 9.53568 3.83173 9.71693 3.98369C9.89818 4.13564 10.0197 4.34693 10.0599 4.58001L10.4499 6.77001C10.5899 7.54001 10.2699 8.32001 9.62991 8.77001L7.77991 10.36C9.20991 12.77 11.2399 14.78 13.6599 16.2L15.2299 14.38C15.6799 13.74 16.4599 13.42 17.2299 13.56L19.4199 13.95C19.8999 14.04 20.2499 14.45 20.2499 14.94V14.93Z" fill="white" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </a>
+    </div>
 
-    <!-- The Founder Section -->
-    <section class="px-6 md:px-12 py-16">
-      <div class="max-w-7xl mx-auto">
-               
-        <h2 class="text-4xl md:text-5xl font-bold text-center mb-8">The Founder</h2>
-        
-        <div class="grid md:grid-cols-2 gap-12 items-center">
-          <!-- Founder Image -->
-          <!-- <div class="relative">
-            <div class="rounded-3xl overflow-hidden bg-gray-200 h-96">
-              
-              <img src="Frame 1411067745.png" alt="Founder" class="w-full h-full object-cover" />
-            </div>
-          </div> -->
+    <div id="mobileMenuDropdown" class="mobile-menu-dropdown">
+        <div class="nav-links">
+            <a th:href="@{/services}" class="nav-item">Services</a>
+            <a th:href="@{/designos}" class="nav-item">DesignOS</a>
+            <a th:href="@{/about}" class="nav-item active">About us</a>
+            <a th:href="@{/insights}" class="nav-item">Insights</a>
+        </div>
+    </div>
+</nav>
 
-          <div class="relative">
-            <img src="/images/Frame 1411067745.png" alt="Mr. Akinrinde" class="w-full rounded-3xl shadow-2xl"/>
+<main class="w-full overflow-x-hidden relative flex flex-col items-center">
+
+    <section class="hero-section px-6 md:px-12 w-full max-w-7xl mx-auto z-10">
+
+        <div class="hero-bg-vector-mobile">
+            <svg width="100%" height="100%" viewBox="0 0 1920 883" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+                <path d="M2022.61 161.41C1937.76 331.654 1552.69 504.349 1275.92 609.649C1111.07 672.851 984.719 711.954 984.719 711.954C969.688 716.147 954.63 720.967 939.599 725.787C797.592 768.511 653.789 807.015 508.188 834.681C443.216 847.316 377.618 856.928 311.448 864.144C176.685 878.604 43.6922 888.815 -92.2691 877.405C-160.862 871.959 -329.936 872.586 -354.007 786.538C-381.074 689.679 -124.755 538.06 -47.7474 492.912C97.2543 406.864 229.022 365.964 323.484 338.298C177.284 408.063 73.7817 485.097 5.78745 542.853C-83.2559 619.261 -86.2784 641.536 -82.0577 654.171C-53.7654 747.408 280.161 690.278 346.93 681.837C401.69 675.819 456.423 667.377 510.584 657.166C655.586 630.698 798.192 592.794 939.572 553.064C946.189 551.267 952.805 549.443 959.422 547.646C959.422 547.646 1102.63 506.718 1275.89 442.346C1479.25 367.135 1722.93 260.011 1827.04 146.923C1848.68 124.077 1906.47 61.5016 1887.22 26.5923C1878.2 9.13762 1852.31 4.94414 1836.68 3.1197C1856.53 0.723428 1999.73 -14.335 2035.84 52.4884C2056.89 92.1903 2031.62 142.73 2022.61 161.383V161.41Z" fill="url(#paint0_linear_1043_6113)"/>
+                <defs>
+                    <linearGradient id="paint0_linear_1043_6113" x1="-614.738" y1="954.358" x2="2407" y2="-129" gradientUnits="userSpaceOnUse">
+                        <stop offset="0.03" stop-color="#00B3FF" stop-opacity="0"/>
+                        <stop offset="0.07" stop-color="#07ADFF"/>
+                        <stop offset="0.11" stop-color="#0DA7FF"/>
+                        <stop offset="0.24" stop-color="#2F89FF"/>
+                        <stop offset="0.42" stop-color="#6659FF"/>
+                        <stop offset="0.52" stop-color="#893BFF"/>
+                        <stop offset="0.65" stop-color="#8531FF"/>
+                        <stop offset="0.88" stop-color="#7D19FF"/>
+                        <stop offset="0.94" stop-color="#7B12FF"/>
+                        <stop offset="1" stop-color="#780AFF" stop-opacity="0"/>
+                    </linearGradient>
+                </defs>
+            </svg>
+        </div>
+
+        <div class="flex flex-col md:grid md:grid-cols-2 gap-12 items-center w-full">
+
+            <div class="relative order-2 md:order-1 flex justify-center w-full mt-6 md:mt-0 z-10">
+                <div class="relative rounded-3xl overflow-hidden shadow-2xl bg-gray-200 h-[300px] md:h-[450px] w-full max-w-[500px] flex items-center justify-center">
+                    <img src="/images/Frame 1411067738.png" alt="Server Infrastructure" class="w-full h-full object-cover" />
+                </div>
             </div>
 
-          <!-- Founder Info -->
-          <div class="space-y-6">
-            <div>
-              <h3 class="text-xl font-bold mb-1">Mr. Akwaowo</h3>
-              <p class="text-gray-500 text-sm mb-2">
-                Founder and Lead Engineer at JustJava, with a background spanning in fintech, SaaS, and enterprise software.
-              </p>
-              <div class="flex items-center gap-3 mt-3">
-                <!-- Social icons -->
-                <a href="#" class="text-java-blue hover:opacity-70 transition-opacity">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-                  </svg>
-                </a>
-                <a href="#" class="text-java-blue hover:opacity-70 transition-opacity">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
-                  </svg>
-                </a>
-                <a href="#" class="text-java-blue hover:opacity-70 transition-opacity">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                  </svg>
-                </a>
-              </div>
+            <div class="space-y-6 order-1 md:order-2 text-center md:text-left w-full relative z-20 flex flex-col items-center md:items-start">
+
+                <h1 class="text-[44px] md:text-5xl lg:text-[56px] font-bold leading-[1.1] font-['Creato_Display'] tracking-tight text-[#070F29]">
+                    We don't just write <br class="hidden md:block">code. We deliver <br class="hidden md:block">systems.
+                </h1>
+
+                <p class="text-[#7E828F] text-[17px] md:text-lg font-['Inter'] leading-relaxed max-w-lg mt-4 w-full">
+                  <span class="hidden md:inline">
+                      Just Java is a structured software delivery company; architecting, building,<br>
+                      and maintaining reliable digital systems through senior-led engineering<br>
+                      pods.
+                  </span>
+                    <span class="inline md:hidden text-left block w-full px-2">
+                      Just Java is a structured software delivery <br>
+                      company; architecting, building, and maintaining<br>
+                      reliable digital systems through senior-led<br>
+                      engineering pods.
+                  </span>
+                </p>
+
+                <div class="mt-8 flex justify-center md:justify-start w-full z-20">
+                    <div class="flex flex-col md:flex-row items-center gap-4 w-full justify-center md:justify-start">
+                        <button class="text-white px-8 py-3.5 rounded-full font-medium hover:opacity-90 transition-opacity inline-flex items-center justify-center gap-3 shadow-md w-full max-w-[280px] md:w-max" style="background: linear-gradient(90deg, #255BEC 0%, #780AFF 100%);">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                            </svg>
+                            Book a call
+                        </button>
+                    </div>
+                </div>
             </div>
 
-            <!-- Founder Quote -->
-            <div class="founder-quote">
-              <p class="text-sm opacity-90">
-                "We started Just Java to fix the software industry's delivery problem. Our tailored teams work as a true extension of yours."
-              </p>
-            </div>
-          </div>
         </div>
-      </div>
     </section>
 
-    <!-- Our Pod Philosophy Section -->
-<section class="pod-philosophy-section">
-  <div class="container">
-    
-      <h2 class="text-4xl md:text-5xl font-bold text-center mb-8">Our Pod Philosophy</h2>
-      <div class="pod-image-container">
-          <img src="/images/Frame 1411067871.png" alt="Pod Philosophy Diagram" class="pod-philosophy-image" />
-      </div>
-  </div>
-</section>
+    <section class="px-6 md:px-12 py-24 w-full relative z-10">
+        <div class="max-w-5xl mx-auto flex flex-col items-center">
+            <h2 class="text-4xl md:text-5xl font-bold text-center w-full mb-12 font-['Creato_Display'] text-[#070F29]">Why Just Java Exists</h2>
 
-
-    <!-- CTA Banner Section -->
-    <section class="px-6 md:px-12 py-16">
-      <div class="max-w-4xl mx-auto">
-        <div class="cta-banner">
-          <h2 class="text-2xl md:text-3xl font-bold mb-4">
-            Work with a team built to deliver not disappear
-          </h2>
-          <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button class="border border-gray-200 px-6 py-3 rounded-full font-medium hover:bg-gray-50 transition-colors inline-flex items-center gap-2">
-              Meet the team
-            </button>
-            <button class="gradient-bg text-white px-6 py-3 rounded-full font-medium hover:opacity-90 transition-opacity inline-flex items-center gap-2">
-              Book a Consultation
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Newsletter Section -->
-    <section class="px-6 md:px-12 py-12">
-      <div class="max-w-7xl mx-auto">
-        <div class="flex flex-col md:flex-row items-center justify-between gap-8">
-          <div>
-            <h3 class="text-xl font-bold mb-2">Stay in the loop. Get product updates,</h3>
-            <p class="text-gray-500">insights, and stories—straight to your inbox</p>
-          </div>
-          <div class="flex gap-4 w-full md:w-auto">
-            <input 
-              type="email" 
-              placeholder="Enter your email"
-              class="flex-1 md:w-80 px-4 py-3 rounded-full border border-gray-200 focus:outline-none focus:border-java-blue"
-            />
-            <button class="gradient-bg text-white px-6 py-3 rounded-full font-medium hover:opacity-90 transition-opacity">
-              Subscribe
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <hr class="horlin" />
-
-    <!-- Footer -->
-    <footer class="px-6 md:px-12 py-12">
-      <div class="max-w-7xl mx-auto">
-        <div class="grid md:grid-cols-5 gap-8 mb-12">
-          <div class="md:col-span-2">
-            <img style="height: 30px; margin-bottom: 8px" src="/images/justjlogo.png" alt="JustJava Logo" />
-            <p class="text-gray-500 text-sm">
-              Just Results. Just Structure. JustJava.
+            <p style="font-size: 40px; line-height: 1.5;" class="hidden md:block text-left md:text-xl font-['Creato_Display'] scroll-reveal-animate mx-auto w-full">
+                <span class="reveal-line">Many software fails not because of poor ideas,</span>
+                <span class="reveal-line">but because of delivery chaos. Disconnected.</span>
+                <span class="reveal-line">freelancers. Vague roadmaps. Missed</span>
+                <span class="reveal-line">deadlines. We built Just Java to fix that.</span>
             </p>
-          </div>
 
-          <div>
-            <h4 class="font-semibold mb-4">Services</h4>
-            <ul class="space-y-2">
-              <li><a href="#" class="text-gray-500 text-sm hover:text-gray-900 transition-colors">Documentation</a></li>
-              <li><a href="#" class="text-gray-500 text-sm hover:text-gray-900 transition-colors">Papers</a></li>
-              <li><a href="#" class="text-gray-500 text-sm hover:text-gray-900 transition-colors">Press Conferences</a></li>
-            </ul>
-          </div>
+            <p class="block md:hidden text-[28px] sm:text-[26px] leading-[1.4] text-left font-['Creato_Display'] font-medium w-full px-2 scroll-reveal-animate">
+        <span class="reveal-text inline-block">
+           Many Software fails not<br>
+           because of poor ideas, but<br>
+           because of delivery chaos.<br>
+           Disconnected freelancers,<br>
+           Vague roadmaps, Missed<br>
+           deadlines, We built JustJava<br>
+           to fix that
+        </span>
+            </p>
 
-          <div>
-            <h4 class="font-semibold mb-4">Services</h4>
-            <ul class="space-y-2">
-              <li><a href="#" class="text-gray-500 text-sm hover:text-gray-900 transition-colors">Documentation</a></li>
-              <li><a href="#" class="text-gray-500 text-sm hover:text-gray-900 transition-colors">Papers</a></li>
-              <li><a href="#" class="text-gray-500 text-sm hover:text-gray-900 transition-colors">Press Conferences</a></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 class="font-semibold mb-4">Resources</h4>
-            <ul class="space-y-2">
-              <li><a href="#" class="text-gray-500 text-sm hover:text-gray-900 transition-colors">Documentation</a></li>
-              <li><a href="#" class="text-gray-500 text-sm hover:text-gray-900 transition-colors">Papers</a></li>
-              <li><a href="#" class="text-gray-500 text-sm hover:text-gray-900 transition-colors">Press Conferences</a></li>
-            </ul>
-          </div>
         </div>
+    </section>
 
-        <hr class="horlin2" />
+    <div class="relative w-full overflow-visible z-0 pb-12">
+        <img src="/images/spiral.png" alt="" class="absolute left-[-200px] top-[100px] w-[800px] opacity-40 z-[-1] pointer-events-none" />
+        <img src="/images/spiral.png" alt="" class="absolute right-[-200px] bottom-[100px] w-[800px] opacity-40 z-[-1] pointer-events-none" style="transform: scaleX(-1);" />
 
-        <div class="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 border-t border-gray-100">
-          <p class="text-gray-500 text-sm">© 2025 JustJava</p>
-          <div class="flex items-center gap-6">
-            <a href="#" class="text-gray-500 text-sm hover:text-gray-900 transition-colors">Terms of Service</a>
-            <a href="#" class="text-gray-500 text-sm hover:text-gray-900 transition-colors">Privacy Policy</a>
-            <a href="#" class="text-gray-500 text-sm hover:text-gray-900 transition-colors">Cookies</a>
-          </div>
+        <section class="px-6 md:px-12 py-24 relative z-10 w-full">
+            <div class="max-w-7xl mx-auto">
+
+                <h2 class="text-4xl md:text-5xl font-bold text-center mb-20 font-['Creato_Display'] text-[#070F29]">Our Philosophy</h2>
+
+                <div class="flex flex-col md:flex-row gap-8 md:gap-16 mb-8 relative items-stretch justify-center">
+
+                    <div class="philosophy-card primary flex-1 flex flex-col justify-between" style="border-radius: 24px; padding: 40px; max-width: 500px;">
+                        <div>
+                            <h3 class="text-2xl font-bold mb-4 font-['Creato_Display'] text-white">Pod Philosophy</h3>
+                            <p class="opacity-90 mb-8 font-['Creato_Display'] text-white leading-relaxed">
+                                Every client is supported by a small, senior-led pod engineers who own the delivery from first brief to go-live. Our proprietary Delivery OS provides the blueprint:
+                            </p>
+                        </div>
+
+                        <div class="mt-auto flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity w-max">
+                            <div class="w-10 h-10 rounded-full border border-white flex items-center justify-center">
+                                <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M16.32 7.21316L9.32 0.21316C9.12708 0.0255955 8.84874 -0.0447978 8.58985 0.0284966C8.33095 0.101791 8.13082 0.307638 8.06485 0.568497C7.99887 0.829355 8.07708 1.1056 8.27 1.29316L13.98 6.99316H0.75C0.335786 6.99316 0 7.32895 0 7.74316C0 8.15737 0.335786 8.49316 0.75 8.49316H13.97L8.27 14.1932C8.12705 14.3324 8.04643 14.5236 8.04643 14.7232C8.04643 14.9227 8.12705 15.1139 8.27 15.2532C8.40784 15.3978 8.60025 15.4777 8.8 15.4732C8.99907 15.4741 9.19012 15.3948 9.33 15.2532L16.33 8.25316C16.6225 7.96034 16.6225 7.48598 16.33 7.19316L16.32 7.21316Z" fill="white"/>
+                                </svg>
+                            </div>
+                            <span class="font-medium text-white font-['Creato_Display']">Learn more</span>
+                        </div>
+                    </div>
+
+                    <div class="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 items-center justify-center">
+                        <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7.48243 18.7479V11.1369H0.000429764V7.65388H7.48243V-0.000115275H11.2664V7.65388H18.7484V11.1369H11.2664V18.7479H7.48243Z" fill="#070F29"/>
+                        </svg>
+                    </div>
+
+                    <div class="philosophy-card flex-1 flex flex-col justify-between border border-gray-200" style="border-radius: 24px; padding: 40px; background: white; max-width: 500px;">
+                        <div>
+                            <h3 class="text-2xl font-bold mb-4 font-['Creato_Display'] text-[#070F29]">DeliveryOS</h3>
+                            <p class="text-[#7E828F] mb-8 font-['Creato_Display'] leading-relaxed">
+                                To redefine software delivery by replacing chaos with clarity—empowering every product team to build with confidence, scale with structure, and ship with pride
+                            </p>
+                        </div>
+
+                        <div class="mt-auto flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity w-max">
+                            <div class="w-10 h-10 rounded-full border-[1.5px] border-[#070F29] flex items-center justify-center">
+                                <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M16.32 7.21316L9.32 0.21316C9.12708 0.0255955 8.84874 -0.0447978 8.58985 0.0284966C8.33095 0.101791 8.13082 0.307638 8.06485 0.568497C7.99887 0.829355 8.07708 1.1056 8.27 1.29316L13.98 6.99316H0.75C0.335786 6.99316 0 7.32895 0 7.74316C0 8.15737 0.335786 8.49316 0.75 8.49316H13.97L8.27 14.1932C8.12705 14.3324 8.04643 14.5236 8.04643 14.7232C8.04643 14.9227 8.12705 15.1139 8.27 15.2532C8.40784 15.3978 8.60025 15.4777 8.8 15.4732C8.99907 15.4741 9.19012 15.3948 9.33 15.2532L16.33 8.25316C16.6225 7.96034 16.6225 7.48598 16.33 7.19316L16.32 7.21316Z" fill="#070F29"/>
+                                </svg>
+                            </div>
+                            <span class="font-medium text-[#070F29] font-['Creato_Display']">Learn more</span>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="text-center font-bold text-[#070F29] mt-12 text-sm flex items-center justify-center gap-2 font-['Creato_Display']">
+                    <span class="text-black text-lg">✱</span>This isn't just process. It's how we've never missed a go-live.
+                </p>
+
+            </div>
+        </section>
+
+        <section class="px-6 md:px-12 py-24 relative z-10 w-full">
+            <div class="max-w-7xl mx-auto">
+
+                <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 font-['Creato_Display'] text-[#070F29]">Our Mission & Vision</h2>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="philosophy-card border border-gray-100" style="border-radius: 24px; padding: 40px;">
+                        <h4 class="text-2xl font-bold mb-4 text-[#070F29] font-['Creato_Display']">Our Mission</h4>
+                        <p class="text-[#7E828F] leading-relaxed font-['Creato_Display']">
+                            To remove the chaos from software delivery and replace it with clarity, accountability, and measurable progress.
+                        </p>
+                    </div>
+
+                    <div class="philosophy-card primary" style="border-radius: 24px; padding: 40px;">
+                        <h4 class="text-2xl font-bold mb-4 text-white font-['Creato_Display']">Our Vision</h4>
+                        <p class="text-white opacity-90 leading-relaxed font-['Creato_Display']">
+                            To become the most trusted software delivery partner for startups and scale-ups globally.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="px-6 md:px-12 py-24 relative z-10 w-full">
+            <div class="max-w-7xl mx-auto">
+
+                <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 font-['Creato_Display'] text-[#070F29]">Our Core values</h2>
+
+                <div class="values-grid">
+                    <div class="value-card" style="border-radius: 24px; padding: 32px;">
+                        <div class="w-14 h-14 bg-[#F8F9FB] rounded-xl flex items-center justify-center mb-6">
+                            <img src="/images/Vector (1).png" alt="Clean code icon" class="w-8 h-8 object-contain" />
+                        </div>
+                        <h4 class="text-xl font-bold mb-3 text-[#070F29] font-['Creato_Display']">Clean code is client respect</h4>
+                        <p class="text-[#7E828F] text-sm leading-relaxed font-['Creato_Display']">
+                            Clean, maintainable code is our standard, because your project deserves to outlast any single developer.
+                        </p>
+                    </div>
+
+                    <div class="value-card" style="border-radius: 24px; padding: 32px;">
+                        <div class="w-14 h-14 bg-[#F8F9FB] rounded-xl flex items-center justify-center mb-6">
+                            <img src="/images/Vector (2).png" alt="Client respect icon" class="w-8 h-8 object-contain" />
+                        </div>
+                        <h4 class="text-xl font-bold mb-3 text-[#070F29] font-['Creato_Display']">Clean code is client respect</h4>
+                        <p class="text-[#7E828F] text-sm leading-relaxed font-['Creato_Display']">
+                            Clean, maintainable code is our standard, because your project deserves to outlast any single developer.
+                        </p>
+                    </div>
+
+                    <div class="value-card" style="border-radius: 24px; padding: 32px;">
+                        <div class="w-14 h-14 bg-[#F8F9FB] rounded-xl flex items-center justify-center mb-6">
+                            <img src="/images/Vector (3).png" alt="Team icon" class="w-8 h-8 object-contain" />
+                        </div>
+                        <h4 class="text-xl font-bold mb-3 text-[#070F29] font-['Creato_Display']">Clean code is client respect</h4>
+                        <p class="text-[#7E828F] text-sm leading-relaxed font-['Creato_Display']">
+                            Our commitment: Full transparency on blockers, so you're never left guessing.
+                        </p>
+                    </div>
+
+                    <div class="value-card" style="border-radius: 24px; padding: 32px;">
+                        <div class="w-14 h-14 bg-[#F8F9FB] rounded-xl flex items-center justify-center mb-6">
+                            <img src="/images/Vector (4).png" alt="Innovation icon" class="w-8 h-8 object-contain" />
+                        </div>
+                        <h4 class="text-xl font-bold mb-3 text-[#070F29] font-['Creato_Display']">Clean code is client respect</h4>
+                        <p class="text-[#7E828F] text-sm leading-relaxed font-['Creato_Display']">
+                            We stay ahead—updating skills, tools, and approaches so your product is never outdated.
+                        </p>
+                    </div>
+                </div>
+
+                <p class="text-center font-bold text-[#070F29] mt-16 text-sm flex items-center justify-center gap-2 font-['Creato_Display']">
+                    <span class="text-java-blue text-lg">✱</span>No ghosting after go live
+                </p>
+            </div>
+        </section>
+    </div>
+
+    <section class="px-6 md:px-12 py-24 bg-white relative z-20 w-full">
+        <div class="max-w-7xl mx-auto">
+
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 font-['Creato_Display'] text-[#070F29]">The Founder</h2>
+
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+
+                <div class="relative w-full">
+                    <img src="/images/Kazeem-Akinrinde.jpg" alt="Mr Kazeem Akinrinde" class="w-full h-auto object-cover rounded-3xl shadow-2xl"/>
+                </div>
+
+                <div class="space-y-8 font-['Creato_Display']">
+                    <div>
+                        <h3 class="text-3xl font-bold mb-3 text-[#070F29]">Mr Kazeem Akinrinde</h3>
+                        <p class="text-[#7E828F] text-base leading-relaxed mb-4">
+                            Founder and Lead Engineer at JustJava, with a background spanning in fintech, SaaS, and enterprise software.
+                        </p>
+                        <div class="flex items-center gap-4 mt-6">
+                            <a href="#" class="text-java-blue hover:opacity-70 transition-opacity">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                                </svg>
+                            </a>
+                            <a href="#" class="text-java-blue hover:opacity-70 transition-opacity">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+                                </svg>
+                            </a>
+                            <a href="#" class="text-java-blue hover:opacity-70 transition-opacity">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="founder-quote shadow-xl" style="padding: 24px; border-radius: 16px;">
+                        <p class="text-base font-medium opacity-95 leading-relaxed">
+                            "We started Just Java to fix the software industry's delivery problem. Our tailored teams work as a true extension of yours."
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
+    </section>
+
+    <section class="pod-philosophy-section py-24 bg-[#F8F9FB] w-full">
+        <div class="container mx-auto px-6 max-w-7xl">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 font-['Creato_Display'] text-[#070F29]">Our Pod Philosophy</h2>
+            <div class="pod-image-container">
+                <img src="/images/Frame 1411067871.png" alt="Pod Philosophy Diagram" class="w-full h-auto drop-shadow-sm rounded-3xl" />
+            </div>
+        </div>
+    </section>
+
+    <section class="px-6 md:px-12 py-16 md:py-24 bg-white w-full">
+        <div class="max-w-4xl mx-auto w-full">
+            <div class="cta-banner p-6 sm:p-8 md:p-12 lg:p-16 w-full flex flex-col items-center shadow-lg border border-gray-100">
+                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 md:mb-8 text-center font-['Creato_Display'] text-[#070F29]">
+                    Work with a team built to deliver not disappear
+                </h2>
+
+                <div class="flex flex-col md:flex-row items-center justify-center gap-4 sm:gap-6 mt-4 md:mt-8 w-full">
+
+                    <div class="flex items-center gap-2 sm:gap-3 text-[#070F29] font-['Creato_Display'] font-semibold text-sm sm:text-base md:text-lg cursor-pointer hover:opacity-80 transition-opacity whitespace-normal text-center justify-center md:whitespace-nowrap">
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-[1.5px] border-[#070F29] flex items-center justify-center shrink-0">
+                            <svg class="w-3 h-3 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </div>
+                        <span>Explore our services</span>
+                    </div>
+
+                    <a href="#" class="consult-btn w-full md:w-auto justify-center px-4 py-2.5 sm:px-6 sm:py-3 md:px-8 md:py-4 mt-2 md:mt-0 gap-2 sm:gap-4">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="19" x2="19" y2="5"></line>
+                            <polyline points="9 5 19 5 19 15"></polyline>
+                        </svg>
+                        <div class="text-wrapper flex flex-col items-start">
+                            <span class="sub-text !text-[9px] sm:!text-[10px] md:!text-xs leading-tight">Ready for a real scale up</span>
+                            <span class="main-text !text-xs sm:!text-sm md:!text-base leading-tight">Book a free consultation call</span>
+                        </div>
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <footer class="px-6 py-12 md:px-12 relative z-10 bg-[#F8F9FB]">
+        <div class="max-w-7xl mx-auto flex flex-col h-full justify-between" style="min-height: 250px;">
+
+            <div class="hidden md:block w-full">
+
+                <div class="flex justify-between items-center mb-10 w-full">
+                    <div class="text-left w-1/2">
+                        <h3 class="font-medium text-[20px] text-[#070F29] font-['Inter'] leading-snug">
+                            Stay in the loop. Get product updates,<br> insights, and stories—straight to your inbox
+                        </h3>
+                    </div>
+
+                    <div class="flex items-center gap-3 w-1/2 justify-end">
+                        <div class="relative w-[320px]">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            <input style="background-color: transparent !important" type="email" placeholder="Enter your email" class="pl-12 pr-4 py-3 rounded-full border border-gray-200 bg-transparent focus:outline-none focus:ring-2 focus:ring-java-blue w-full text-gray-900 text-sm" />
+                        </div>
+                        <button style="background: linear-gradient(90deg, #3B82F6 0%, #780AFF 100%)" class="text-white px-6 py-3 rounded-full font-medium inline-flex items-center gap-2 hover:opacity-90 transition-opacity">
+                            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.7896 0.0744176C18.8056 -0.280582 19.7816 0.695418 19.4266 1.71142L13.5016 18.6414C13.1166 19.7394 11.5866 19.8014 11.1146 18.7384L8.25561 12.3064L12.2796 8.28142C12.4121 8.13924 12.4842 7.9512 12.4808 7.7569C12.4774 7.56259 12.3986 7.37721 12.2612 7.2398C12.1238 7.10238 11.9384 7.02367 11.7441 7.02024C11.5498 7.01681 11.3618 7.08894 11.2196 7.22142L7.19461 11.2454L0.762611 8.38642C-0.300389 7.91342 -0.23739 6.38442 0.85961 5.99942L17.7896 0.0744176Z" fill="#F5F5F5"/></svg>
+                            Subscribe
+                        </button>
+                    </div>
+                </div>
+
+                <hr class="border-gray-300 w-full mb-10 block" />
+
+                <div class="flex justify-between items-start w-full mb-10">
+                    <div class="flex flex-col items-start w-1/3">
+                        <img style="height: 38px; margin-bottom: 12px" src="/images/justjlogo.png" alt="JustJava" />
+                        <p class="text-[#070F29] font-medium font-['Inter'] text-[14px]">Just Results. Just Structure. JustJava.</p>
+                    </div>
+
+                    <div class="flex gap-24 font-['Inter'] w-2/3 justify-end pr-8">
+                        <div>
+                            <h4 class="font-bold text-[16px] mb-4 text-[#070F29]">Services</h4>
+                            <ul class="space-y-3">
+                                <li><a href="#" class="text-[#070F29] text-[14px] opacity-80 hover:opacity-100 transition-colors">Documentation</a></li>
+                                <li><a href="#" class="text-[#070F29] text-[14px] opacity-80 hover:opacity-100 transition-colors">Papers</a></li>
+                                <li><a href="#" class="text-[#070F29] text-[14px] opacity-80 hover:opacity-100 transition-colors">Press Conferences</a></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-[16px] mb-4 text-[#070F29]">Services</h4>
+                            <ul class="space-y-3">
+                                <li><a href="#" class="text-[#070F29] text-[14px] opacity-80 hover:opacity-100 transition-colors">Documentation</a></li>
+                                <li><a href="#" class="text-[#070F29] text-[14px] opacity-80 hover:opacity-100 transition-colors">Papers</a></li>
+                                <li><a href="#" class="text-[#070F29] text-[14px] opacity-80 hover:opacity-100 transition-colors">Press Conferences</a></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-[16px] mb-4 text-[#070F29]">Resources</h4>
+                            <ul class="space-y-3">
+                                <li><a href="#" class="text-[#070F29] text-[14px] opacity-80 hover:opacity-100 transition-colors">Documentation</a></li>
+                                <li><a href="#" class="text-[#070F29] text-[14px] opacity-80 hover:opacity-100 transition-colors">Papers</a></li>
+                                <li><a href="#" class="text-[#070F29] text-[14px] opacity-80 hover:opacity-100 transition-colors">Press Conferences</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="border-gray-300 w-full mb-6 block" />
+
+                <div class="flex items-center justify-between w-full font-['Inter'] text-[13px] text-[#4B5563]">
+                    <p>© 2026 JustJava</p>
+                    <div class="flex items-center gap-8">
+                        <a href="#" class="hover:text-gray-900 transition-colors">Terms of Service</a>
+                        <a href="#" class="hover:text-gray-900 transition-colors">Privacy Policy</a>
+                        <a href="#" class="hover:text-gray-900 transition-colors">Cookies</a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="flex md:hidden flex-col items-center w-full font-['Inter']">
+
+                <div class="flex flex-col items-center justify-center text-center mb-12 w-full max-w-xl mx-auto">
+                    <h3 class="font-medium text-[19px] text-[#070F29] mb-4 font-['Inter'] leading-snug">
+                        Stay in the loop. Get product updates, insights,<br class="hidden md:block"> and stories—straight to your inbox
+                    </h3>
+                    <div class="flex items-center gap-2 w-full relative">
+                        <div class="relative w-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            <input style="background-color: transparent !important" type="email" placeholder="Enter your email" class="pl-12 pr-4 py-3 rounded-full border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-java-blue w-full text-gray-900" />
+                        </div>
+                    </div>
+                    <button style="background: linear-gradient(90deg, #3B82F6 0%, #780AFF 100%)" class="text-white px-8 py-3 mt-4 rounded-full font-medium inline-flex items-center justify-center gap-2 hover:opacity-90 transition-opacity w-full max-w-[200px]">
+                        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.7896 0.0744176C18.8056 -0.280582 19.7816 0.695418 19.4266 1.71142L13.5016 18.6414C13.1166 19.7394 11.5866 19.8014 11.1146 18.7384L8.25561 12.3064L12.2796 8.28142C12.4121 8.13924 12.4842 7.9512 12.4808 7.7569C12.4774 7.56259 12.3986 7.37721 12.2612 7.2398C12.1238 7.10238 11.9384 7.02367 11.7441 7.02024C11.5498 7.01681 11.3618 7.08894 11.2196 7.22142L7.19461 11.2454L0.762611 8.38642C-0.300389 7.91342 -0.23739 6.38442 0.85961 5.99942L17.7896 0.0744176Z" fill="#F5F5F5"/></svg>
+                        Subscribe
+                    </button>
+                </div>
+
+                <hr class="border-gray-300 w-full mb-8 block" />
+
+                <div class="flex flex-col items-center mb-10 w-full text-center">
+                    <img style="height: 38px; margin-bottom: 12px" src="/images/justjlogo.png" alt="JustJava" />
+                    <p class="text-[#070F29] font-medium text-[15px]">Just Results. Just Structure. JustJava.</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-y-8 gap-x-12 w-full text-left pl-2 mb-8">
+                    <div>
+                        <h4 class="font-bold text-[17px] mb-3 text-[#070F29]">Services</h4>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="text-[#070F29] text-[15px] opacity-80">Documentation</a></li>
+                            <li><a href="#" class="text-[#070F29] text-[15px] opacity-80">Papers</a></li>
+                            <li><a href="#" class="text-[#070F29] text-[15px] opacity-80">Press Conferences</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-[17px] mb-3 text-[#070F29]">Services</h4>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="text-[#070F29] text-[15px] opacity-80">Documentation</a></li>
+                            <li><a href="#" class="text-[#070F29] text-[15px] opacity-80">Papers</a></li>
+                            <li><a href="#" class="text-[#070F29] text-[15px] opacity-80">Press Conferences</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-[17px] mb-3 text-[#070F29]">Services</h4>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="text-[#070F29] text-[15px] opacity-80">Documentation</a></li>
+                            <li><a href="#" class="text-[#070F29] text-[15px] opacity-80">Papers</a></li>
+                            <li><a href="#" class="text-[#070F29] text-[15px] opacity-80">Press Conferences</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-[17px] mb-3 text-[#070F29]">Services</h4>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="text-[#070F29] text-[15px] opacity-80">Documentation</a></li>
+                            <li><a href="#" class="text-[#070F29] text-[15px] opacity-80">Papers</a></li>
+                            <li><a href="#" class="text-[#070F29] text-[15px] opacity-80">Press Conferences</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <hr class="border-gray-300 w-full mb-6 block" />
+
+                <div class="flex flex-col items-center w-full">
+                    <p class="text-[#4B5563] text-[13px] mb-4">© 2026 JustJava</p>
+                    <div class="flex items-center justify-between w-full px-2 gap-4">
+                        <a href="#" class="text-[#070F29] opacity-80 font-medium text-[13px] hover:text-gray-900 transition-colors">Terms of Service</a>
+                        <a href="#" class="text-[#070F29] opacity-80 font-medium text-[13px] hover:text-gray-900 transition-colors">Privacy Policy</a>
+                        <a href="#" class="text-[#070F29] opacity-80 font-medium text-[13px] hover:text-gray-900 transition-colors">Cookies</a>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
     </footer>
 
-    <script>
-      // Mobile menu toggle
-      function toggleMobileMenu() {
-        const menu = document.getElementById("mobileMenu");
-        menu.classList.toggle("active");
+</main>
+
+<script>
+    // Mobile menu toggle
+    function toggleMobileMenu() {
+      const menu = document.getElementById("mobileMenuDropdown");
+      const hamburgerIcon = document.getElementById('icon-hamburger');
+      const closeIcon = document.getElementById('icon-close');
+
+      if (menu.style.display === 'block') {
+        menu.style.display = 'none';
+        hamburgerIcon.style.display = 'block';
+        closeIcon.style.display = 'none';
+      } else {
+        menu.style.display = 'block';
+        hamburgerIcon.style.display = 'none';
+        closeIcon.style.display = 'block';
       }
+    }
 
-      // Smooth scroll for navigation links
-      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-        anchor.addEventListener("click", function (e) {
-          e.preventDefault();
-          const target = document.querySelector(this.getAttribute("href"));
-          if (target) {
-            target.scrollIntoView({
-              behavior: "smooth",
-              block: "start",
-            });
-          }
-          document.getElementById("mobileMenu").classList.remove("active");
-        });
-      });
-
-      // Add scroll effect to navbar
-      window.addEventListener("scroll", function () {
-        const nav = document.querySelector("nav");
-        if (window.scrollY > 50) {
-          nav.classList.add("shadow-sm");
-        } else {
-          nav.classList.remove("shadow-sm");
+    // Smooth scroll for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+      anchor.addEventListener("click", function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute("href"));
+        if (target) {
+          target.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }
+        const mobileMenu = document.getElementById("mobileMenuDropdown");
+        if (mobileMenu && mobileMenu.style.display === 'block') {
+             toggleMobileMenu();
         }
       });
-    </script>
-  </body>
+    });
+
+    // Add scroll effect to navbar
+    window.addEventListener("scroll", function () {
+      const nav = document.querySelector("nav");
+      if (window.scrollY > 50) {
+        nav.classList.add("shadow-sm");
+      } else {
+        nav.classList.remove("shadow-sm");
+      }
+    });
+
+    // Text Highlight Animation Logic on Scroll
+    document.addEventListener("DOMContentLoaded", function() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('scrolled');
+                    }, 50);
+                } else {
+                    entry.target.classList.remove('scrolled');
+                }
+            });
+        }, { threshold: 0.3 });
+
+        const revealTexts = document.querySelectorAll('.scroll-reveal-animate');
+        revealTexts.forEach(revealText => {
+            observer.observe(revealText);
+        });
+    });
+</script>
+</body>
 </html>

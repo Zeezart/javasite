@@ -1,6 +1,5 @@
 package tech.justjava.testhome.controller;
 
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -48,12 +47,27 @@ public class homeController {
 
     @GetMapping("/about")
     public String aboutPage() {
+        // Returns about.html from templates folder
         return "aboutpage";
     }
 
     @GetMapping("/designos")
     public String designos() {
+        // Returns designos.html from templates folder
         return "designos";
+    }
+
+    @GetMapping("/services")
+    public String services() {
+        // Returns designos.html from templates folder
+        return "services";
+    }
+
+    // THIS WAS THE MISSING PIECE CAUSING THE 404 ERROR
+    @GetMapping("/insights")
+    public String insightsPage() {
+        // Returns insights.html from templates folder
+        return "insights";
     }
 
     // ================= HERO TEXT (ADMIN) =================
@@ -63,9 +77,7 @@ public class homeController {
 
     @PostMapping("/save-text")
     public String saveText(@RequestParam String heroText) {
-
         log.info("Hero text updated: {}", heroText);
-
         this.heroText = heroText;
         return "redirect:/admin";
     }
@@ -93,13 +105,3 @@ public class homeController {
         return "redirect:/admin";
     }
 }
-
-
-
-
-
-
-
-
-
-

@@ -1,775 +1,638 @@
 <!DOCTYPE html>
-<!--<html lang="en">-->
-<!--<html xmlns:th="http://www.thymeleaf.org">-->
-<html xmlns:th="http://www.thymeleaf.org"
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>JustJava - We help Start-ups Build better MVPs</title>
-    <meta
-      name="description"
-      content="We help start-ups and scale-ups build, launch, and maintain reliable software with dedicated engineering pods and a structured delivery process."
-    />
-     <link rel="stylesheet" href="/css/style.css" />
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
-    
-    <!-- Quill.js Rich Text Editor -->
-    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
-    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 
-    <!-- Tailwind -->
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ["Inter", "sans-serif"],
-            },
-            colors: {
-              java: {
-                blue: "#2563eb",
-                purple: "#8b5cf6",
-                navy: "#0f172a",
-                lightBlue: "#3b82f6",
-                green: "#16a34a",
-                lime: "#a3e635",
-                pink: "#ec4899",
-                orange: "#f97316",
-              },
+  <title>JustJava - Web Design & Development</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ["Inter", "sans-serif"] },
+          colors: {
+            java: {
+              blue: "#2563eb", purple: "#8b5cf6", navy: "#0f172a",
+              lightBlue: "#3b82f6", green: "#16a34a", lime: "#a3e635",
+              pink: "#ec4899", orange: "#f97316",
             },
           },
         },
-      };
-    </script>
+      },
+    };
+  </script>
 
-  </head>
-  <body
-    style="background-color: #eef2f7 !important"
-    class="text-gray-900 antialiased"
-  >
-    <!-- Navigation -->
-    <nav
-      class="w-full py-4 px-6 md:px-12 flex items-center justify-between relative z-50"
-    >
-      <div style="margin-left: 60px !important" class="flex items-center gap-2">
-        <img style="height: 30px" src="/images/justjlogo.png" alt="" srcset="" />
-      </div>
+  <link th:href="@{/css/style.css}" rel="stylesheet" type="text/css" />
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
-      <div
-        style="
-          border-radius: 15px;
-          background-color: #ebebeb;
-          width: 390px;
-          height: 49px;
-        "
-        class="hidden md:flex items-center gap-8 desktop-nav"
-      >
-        <a
-          style="margin-left: 15px !important"
-          href="#services"
-          class="text-gray-500 hover:text-gray-900 transition-colors"
-          >Services</a
-        >
-        <a th:href="@{/designos}" class="text-gray-500 hover:text-gray-900 transition-colors"
-          >DesignOS</a
-        >
-          <a th:href="@{/about}" class="text-gray-500 hover:text-gray-900 transition-colors">About us</a>
+  <style>
+    /* Utility & Base Styles */
+    body {
+        background-color: #EEF2F7;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+    }
+    .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    .logout-link {
+        color: #ff6b6b;
+        font-size: 0.9rem;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    .admin-user-text {
+        color: #070F29;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
 
-<!--          <a href="aboutpage.html" class="text-gray-500 hover:text-gray-900 transition-colors"-->
-<!--          >About us</a-->
+    /* Navbar Standard Styles */
+    .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100px;
+        padding: 20px 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        background: #EEF2F7;
+        box-sizing: border-box;
+    }
+    .nav-container {
+        width: 1720px;
+        max-width: 100%;
+        height: 69px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .logo {
+        width: 200px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+    }
+    .logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+    .nav-items-wrapper {
+        width: 531px;
+        height: 69px;
+        background: #EBEBEB;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        border-radius: 100px;
+        display: flex;
+        align-items: center;
+        padding: 8px 10px;
+        box-sizing: border-box;
+        gap: 24px;
+    }
+    .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        width: 100%;
+        justify-content: center;
+    }
+    .nav-item {
+        font-family: 'Creato Display', sans-serif;
+        font-weight: 500;
+        font-size: 18px;
+        text-decoration: none;
+        color: #070F29;
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 53px;
+        border-radius: 50px;
+        gap: 8px;
+        transition: all 300ms ease-out;
+        position: relative;
+    }
+    .nav-item:hover {
+        background: #F5F5F5;
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        background-image: linear-gradient(90deg, #255BEC 0%, #780AFF 100%);
+    }
+    .book-call-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 153px;
+        height: 48px;
+        padding: 8px 16px;
+        box-sizing: border-box;
+        border-radius: 100px;
+        background: linear-gradient(90deg, #255BEC 0%, #780AFF 100%);
+        text-decoration: none;
+    }
+    .btn-text {
+        font-family: 'Creato Display', sans-serif;
+        font-weight: 500;
+        font-size: 18px;
+        line-height: 1;
+        color: #FFFFFF;
+        letter-spacing: 0%;
+    }
 
-        <a href="#" class="text-gray-500 hover:text-gray-900 transition-colors"
-          >Insights</a
-        >
-      </div>
+    /* Mobile Nav Base Settings */
+    .mobile-nav {
+        display: none;
+    }
+    .mobile-menu-dropdown {
+        display: none;
+    }
 
-      <button
-        style="background-color: blue; color: white"
-        class="border border-gray-200 text-gray-900 px-5 py-2.5 rounded-full font-medium hover:bg-gray-50 transition-colors inline-flex items-center gap-2 text-sm"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path
-            d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
-          ></path>
-        </svg>
-        Book a call
-      </button>
+    /* --- Hero Base Styles (Restored exactly to original desktop setup) --- */
+    .hero {
+        position: relative;
+        z-index: 1;
+        background-color: transparent !important; /* Removes white background universally */
+    }
+    .hero-bg-vector {
+        position: absolute;
+        width: 100%;
+        height: 180%;
+        top: 350px;
+        left: 0;
+        z-index: -1;
+        pointer-events: none;
+    }
+    .hero-visual-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+    .hero-image-wrapper {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        background-color: transparent !important; /* Removes white background universally */
+    }
+    .video-play-btn {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 64px;
+        height: 64px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        z-index: 5;
+    }
 
-      <!-- Mobile menu button -->
-      <button
-        class="mobile-menu-btn md:hidden p-2"
-        onclick="toggleMobileMenu()"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <line x1="3" y1="12" x2="21" y2="12"></line>
-          <line x1="3" y1="6" x2="21" y2="6"></line>
-          <line x1="3" y1="18" x2="21" y2="18"></line>
-        </svg>
-      </button>
-    </nav>
+    /* CTA button default base */
+    .consult-btn.hero-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 16px;
+        background: linear-gradient(90deg, #3B82F6 0%, #780AFF 100%);
+        padding: 12px 32px;
+        border-radius: 100px;
+        text-decoration: none;
+        color: white;
+    }
 
-    <!-- Mobile Menu -->
-    <div
-      id="mobileMenu"
-      class="mobile-menu bg-white border-b border-gray-100 px-6 py-4 md:hidden"
-    >
-      <div class="flex flex-col gap-4">
-        <a
-          href="#services"
-          class="text-gray-500 hover:text-gray-900 transition-colors"
-          >Services</a
-        >
-        <a th:href="@{/designos}" class="text-gray-500 hover:text-gray-900 transition-colors"
-          >DesignOS</a
-        >
-        <a th:href="@{/about}" class="text-gray-500 hover:text-gray-900 transition-colors"
-          >About us</a
-        >
-        <a href="#" class="text-gray-500 hover:text-gray-900 transition-colors"
-          >Insights</a
-        >
+    /* Responsive Mobile Layout */
+    @media (max-width: 768px) {
+        .desktop-nav {
+            display: none !important;
+        }
+
+        .navbar {
+            padding: 16px 24px;
+            height: 80px;
+        }
+
+        .mobile-nav {
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mobile-toggle-btn {
+            width: 48px;
+            height: 48px;
+            background-color: #FFFFFF;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: none;
+            cursor: pointer;
+            outline: none;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
+            flex-shrink: 0;
+        }
+
+        .mobile-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+        }
+
+        .mobile-logo img {
+            height: 38px;
+            object-fit: contain;
+        }
+
+        .mobile-call-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(90deg, #255BEC 0%, #780AFF 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            box-shadow: 0px 4px 10px rgba(37, 91, 236, 0.2);
+            flex-shrink: 0;
+        }
+
+        .mobile-menu-dropdown {
+            position: fixed;
+            top: 80px;
+            left: 0;
+            width: 100%;
+            background-color: #ffffff;
+            border-bottom: 1px solid #f3f4f6;
+            z-index: 999;
+            padding: 20px 24px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .mobile-menu-dropdown .nav-links {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .mobile-menu-dropdown .nav-item {
+            height: auto;
+            padding: 8px 0;
+            font-size: 20px;
+            border-radius: 0;
+            justify-content: flex-start;
+            width: 100%;
+        }
+
+        /* --- MOBILE SPECIFIC HERO FIXES --- */
+        .hero {
+            padding-top: 110px; /* Space for mobile nav */
+        }
+
+        .hero-text-content {
+            padding: 0 24px;
+            text-align: left; /* Left alignment enforced */
+        }
+
+        .hero-headline {
+            font-size: 44px !important;
+            line-height: 1.15;
+            text-align: left !important;
+        }
+
+        .hero-sub-action {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* Subtext wrapper aligns left */
+            width: 100%;
+        }
+
+        .hero-subtext {
+            font-size: 16px;
+            text-align: left !important; /* Left alignment enforced */
+            display: block;
+        }
+
+        .consult-btn.hero-cta {
+            align-self: center !important; /* Forces the button to center */
+            margin-top: 32px;
+            padding: 10px 24px !important; /* Moderate size */
+            width: auto;
+            min-width: 250px;
+            justify-content: center;
+            position: relative;
+            z-index: 10; /* Keeps button above background vector */
+        }
+
+        .hero-bg-vector {
+            top: 380px !important; /* Positioned below subtext, passing perfectly behind centered button */
+            height: 130%;
+            z-index: -1;
+        }
+
+        .hero-visual-content {
+            margin-top: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 0 24px;
+        }
+
+        .hero-image-wrapper {
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%; /* Maintains original full mobile width */
+            background: transparent !important; /* Removes white frame */
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+        }
+
+        .hero-main-img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 16px;
+            margin: 0 auto;
+        }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-container desktop-nav">
+    <div class="logo">
+      <img th:src="@{/images/justjlogo.png}" alt="JustJava Logo" />
+    </div>
+
+    <div class="nav-items-wrapper">
+      <div class="nav-links">
+        <a th:href="@{/services}" class="nav-item">Services</a>
+        <a th:href="@{/designos}" class="nav-item">DesignOS</a>
+        <a th:href="@{/about}" class="nav-item">About us</a>
+        <a th:href="@{/insights}" class="nav-item">Insights</a>
       </div>
     </div>
-    <!-- Vector Image - Full width, extends under CoreCare -->
-    <div class="vector-container">
-      <img src="/images/vector.png" alt="evryone" />
+
+    <div class="nav-actions">
+      <a href="#" class="book-call-btn">
+        <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17.2499 12.0101V15.3101C17.2499 16.5401 16.1599 17.4801 14.9399 17.3101C7.59991 16.2901 1.78991 10.4801 0.769912 3.14009C0.599912 1.92009 1.53991 0.830089 2.76991 0.830089H6.06991C6.30643 0.829011 6.53568 0.911805 6.71693 1.06376C6.89818 1.21572 7.01971 1.42701 7.05991 1.66009L7.44991 3.85009C7.58991 4.62009 7.26991 5.40009 6.62991 5.85009L4.77991 7.44009C6.20991 9.85009 8.23991 11.8601 10.6599 13.2801L12.2299 11.4601C12.6799 10.8201 13.4599 10.5001 14.2299 10.6401L16.4199 11.0301C16.8999 11.1201 17.2499 11.5301 17.2499 12.0201V12.0101Z" fill="white" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M17.1198 7.11C17.1198 5.48953 16.476 3.93542 15.3302 2.78958C14.1843 1.64373 12.6302 1 11.0098 1M13.6798 7.11C13.6798 5.63 12.4798 4.44 11.0098 4.44" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="btn-text" style="color: #FFFFFF;">Book a call</span>
+      </a>
+
+      <div th:if="${isAdminView}" sec:authorize="hasRole('ADMIN')" style="display: flex; gap: 10px; align-items: center;">
+        <span class="admin-user-text">Admin Mode</span>
+        <a href="/logout" class="logout-link">Logout</a>
+      </div>
     </div>
-    <!-- Hero Section -->
-  <section class="relative px-6 md:px-12 py-12 overflow-visible">
-    <div
-            class="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center relative z-10"
-    >
-      <div class="space-y-6">
-        <div class="space-y-2">
-          <h1
-                  class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight"
-          >
-            We help <span id="word1" class="animated-word fade-in">Start-ups</span>
-          </h1>
-          <div class="flex items-center gap-3">
-              <span class="text-java-blue text-3xl md:text-4xl font-bold"
-              >&lt;/&gt;</span
-              >
-            <span
-                    id="word2"
-                    class="text-4xl md:text-5xl lg:text-6xl font-bold animated-word fade-in"
-            >Build</span
-            >
-          </div>
-          <h1
-                  class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight"
-          >
-            better <span id="word3" class="animated-word fade-in">MVPs</span>
-          </h1>
-          <h1
-                  class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight"
-          >
-            that just works.
-          </h1>
-        </div>
+  </div>
 
+  <div class="mobile-nav">
+    <button class="mobile-toggle-btn" onclick="toggleMobileMenu()">
+      <svg id="icon-hamburger" width="15" height="7" viewBox="0 0 15 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10.37 1.5H0.75C0.335786 1.5 0 1.16421 0 0.75C0 0.335786 0.335786 0 0.75 0H10.37C10.7842 0 11.12 0.335786 11.12 0.75C11.12 1.16421 10.7842 1.5 10.37 1.5Z" fill="#070F29"/>
+        <path d="M0.75 5H13.57C13.9842 5 14.32 5.33579 14.32 5.75C14.32 6.16421 13.9842 6.5 13.57 6.5H0.75C0.335786 6.5 0 6.16421 0 5.75C0 5.33579 0.335786 5 0.75 5Z" fill="#070F29"/>
+      </svg>
+      <svg id="icon-close" style="display: none;" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M15.3822 16.5035L6.62228 7.7436C6.2451 7.36642 6.17678 6.82322 6.46967 6.53033C6.76256 6.23744 7.30576 6.30576 7.68294 6.68294L16.4428 15.4428C16.82 15.82 16.8883 16.3632 16.5954 16.6561C16.3025 16.949 15.7593 16.8807 15.3822 16.5035Z" fill="#070F29"/>
+        <path d="M7.09674 15.4697L16.1618 6.40456C16.4547 6.11167 16.9296 6.11167 17.2225 6.40456C17.5154 6.69745 17.5154 7.17233 17.2225 7.46522L8.1574 16.5303C7.8645 16.8232 7.38963 16.8232 7.09674 16.5303C6.80384 16.2374 6.80384 15.7626 7.09674 15.4697Z" fill="#070F29"/>
+      </svg>
+    </button>
 
+    <div class="mobile-logo">
+      <a th:href="${#authorization.expression('hasRole(''ADMIN'')')} ? '/admin' : '/public'">
+        <img th:src="@{/images/mobile-logo.png}" alt="JustJava Mobile Logo" />
+      </a>
+    </div>
 
-        <div th:if="${isAdminView}" sec:authorize="hasRole('ADMIN')" class="editable-container max-w-md">
-          <form th:action="@{/save-text}" method="post">
-        <textarea name="heroText"
-                  th:text="${heroText}"
-                  rows="4"
-                  class="text-gray-500 text-lg w-full bg-transparent border-none resize-none">
-        </textarea>
-            <button type="submit" class="mt-3 px-4 py-2 bg-blue-600 text-white rounded">
-              Save
+    <a href="#" class="mobile-call-btn">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20.2499 14.93V18.23C20.2499 19.46 19.1599 20.4 17.9399 20.23C10.5999 19.21 4.78991 13.4 3.76991 6.06001C3.59991 4.84001 4.53991 3.75001 5.76991 3.75001H9.06991C9.30643 3.74893 9.53568 3.83173 9.71693 3.98369C9.89818 4.13564 10.0197 4.34693 10.0599 4.58001L10.4499 6.77001C10.5899 7.54001 10.2699 8.32001 9.62991 8.77001L7.77991 10.36C9.20991 12.77 11.2399 14.78 13.6599 16.2L15.2299 14.38C15.6799 13.74 16.4599 13.42 17.2299 13.56L19.4199 13.95C19.8999 14.04 20.2499 14.45 20.2499 14.94V14.93Z" fill="white" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M20.1217 10.03C20.1217 8.40957 19.478 6.85547 18.3321 5.70962C17.1863 4.56377 15.6322 3.92004 14.0117 3.92004M16.6817 10.03C16.6817 8.55004 15.4817 7.36004 14.0117 7.36004" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M20.2499 14.93V18.23C20.2499 19.46 19.1599 20.4 17.9399 20.23C10.5999 19.21 4.78991 13.4 3.76991 6.06001C3.59991 4.84001 4.53991 3.75001 5.76991 3.75001H9.06991C9.30643 3.74893 9.53568 3.83173 9.71693 3.98369C9.89818 4.13564 10.0197 4.34693 10.0599 4.58001L10.4499 6.77001C10.5899 7.54001 10.2699 8.32001 9.62991 8.77001L7.77991 10.36C9.20991 12.77 11.2399 14.78 13.6599 16.2L15.2299 14.38C15.6799 13.74 16.4599 13.42 17.2299 13.56L19.4199 13.95C19.8999 14.04 20.2499 14.45 20.2499 14.94V14.93Z" fill="white" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+  </div>
+
+  <div id="mobileMenuDropdown" class="mobile-menu-dropdown">
+    <div class="nav-links">
+      <a th:href="@{/services}" class="nav-item">Services</a>
+      <a th:href="@{/designos}" class="nav-item">DesignOS</a>
+      <a th:href="@{/about}" class="nav-item">About us</a>
+      <a th:href="@{/insights}" class="nav-item">Insights</a>
+    </div>
+  </div>
+</nav>
+
+<div layout:fragment="content">
+
+  <header class="hero">
+
+    <div class="hero-bg-vector">
+      <svg width="100%" height="100%" viewBox="0 0 1920 883" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <path d="M2022.61 161.41C1937.76 331.654 1552.69 504.349 1275.92 609.649C1111.07 672.851 984.719 711.954 984.719 711.954C969.688 716.147 954.63 720.967 939.599 725.787C797.592 768.511 653.789 807.015 508.188 834.681C443.216 847.316 377.618 856.928 311.448 864.144C176.685 878.604 43.6922 888.815 -92.2691 877.405C-160.862 871.959 -329.936 872.586 -354.007 786.538C-381.074 689.679 -124.755 538.06 -47.7474 492.912C97.2543 406.864 229.022 365.964 323.484 338.298C177.284 408.063 73.7817 485.097 5.78745 542.853C-83.2559 619.261 -86.2784 641.536 -82.0577 654.171C-53.7654 747.408 280.161 690.278 346.93 681.837C401.69 675.819 456.423 667.377 510.584 657.166C655.586 630.698 798.192 592.794 939.572 553.064C946.189 551.267 952.805 549.443 959.422 547.646C959.422 547.646 1102.63 506.718 1275.89 442.346C1479.25 367.135 1722.93 260.011 1827.04 146.923C1848.68 124.077 1906.47 61.5016 1887.22 26.5923C1878.2 9.13762 1852.31 4.94414 1836.68 3.1197C1856.53 0.723428 1999.73 -14.335 2035.84 52.4884C2056.89 92.1903 2031.62 142.73 2022.61 161.383V161.41Z" fill="url(#paint0_linear_1043_6113)"/>
+        <defs>
+          <linearGradient id="paint0_linear_1043_6113" x1="-614.738" y1="954.358" x2="2407" y2="-129" gradientUnits="userSpaceOnUse">
+            <stop offset="0.03" stop-color="#00B3FF" stop-opacity="0"/>
+            <stop offset="0.07" stop-color="#07ADFF"/>
+            <stop offset="0.11" stop-color="#0DA7FF"/>
+            <stop offset="0.24" stop-color="#2F89FF"/>
+            <stop offset="0.42" stop-color="#6659FF"/>
+            <stop offset="0.52" stop-color="#893BFF"/>
+            <stop offset="0.65" stop-color="#8531FF"/>
+            <stop offset="0.88" stop-color="#7D19FF"/>
+            <stop offset="0.94" stop-color="#7B12FF"/>
+            <stop offset="1" stop-color="#780AFF" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+
+    <div class="hero-container">
+
+      <div class="hero-text-content">
+        <h1 class="hero-headline">
+          We help <span id="slot-1" class="opacity-text">Start-ups</span><br />
+          <span class="inline-group">
+            <span class="text-blue-600 font-bold" style="font-size: 0.9em; font-family: monospace;">&lt;/&gt;</span>
+            <span id="slot-2" class="action-text">Build</span>
+            <button th:if="${isAdminView}" sec:authorize="hasRole('ADMIN')" id="edit-hero-btn" class="edit-icon-btn" title="Edit this text">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.1464 1.14645C12.3417 0.951184 12.6583 0.951184 12.8536 1.14645L14.8536 3.14645C15.0488 3.34171 15.0488 3.65829 14.8536 3.85355L5.85355 12.8536C5.80382 12.9033 5.74215 12.9419 5.675 12.9659L2.32175 14.0873C1.97418 14.1988 1.58825 14.0315 1.47676 13.6839C1.4327 13.5562 1.4327 13.4188 1.47676 13.2911L2.59818 9.93775C2.62225 9.87078 2.66076 9.80938 2.71045 9.75969L11.7109 0.759172C11.9061 0.563905 12.2227 0.563905 12.418 0.759172L12.1464 1.14645ZM13.4393 2.45306L12.4963 1.50983L3.98961 10.0164L4.93284 10.9596L13.4393 2.45306Z" fill="currentColor"/></svg>
             </button>
-          </form>
-        </div>
+          </span><br />
+          better <span id="slot-3" class="opacity-text">MVPs</span><br />
+          that just works.
+        </h1>
 
-        <div th:unless="${isAdminView}" class="max-w-md">
-          <p class="text-gray-500 text-lg leading-relaxed" th:text="${heroText}">
-            We help start-ups and scale-ups build, launch, and maintain reliable software...
-          </p>
-        </div>
-          <button
-            class="gradient-bg text-white px-6 py-4 rounded-full flex items-center justify-between gap-6 hover:opacity-90 transition-opacity"
-          >
-            <!-- Text block -->
-            <div class="text-left leading-tight">
-              <p class="text-sm font-normal opacity-90">
-                Ready for a real scale up
-              </p>
-              <p class="text-base font-semibold">
-                Book a free consultation call
-              </p>
-            </div>
+        <div class="hero-sub-action">
+          <div class="editable-wrapper">
+            <div class="display-view" style="display: flex; align-items: flex-start;">
 
-            <!-- Arrow -->
-            <span class="flex items-center justify-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </span>
-          </button>
-        </div>
+              <span class="hero-subtext" th:utext="${heroText != null ? heroText : 'We help start-ups and scale-ups build, launch, and maintain reliable software with dedicated engineering pods and a structured delivery process.'}">
+                We help start-ups and scale-ups build, launch, and maintain reliable software with dedicated engineering pods and a structured delivery process.
+              </span>
 
-        <div class="relative">
-          <div class="relative rounded-3xl overflow-hidden shadow-2xl">
-            <img
-              src="/images/wpic.png"
-              alt="JustJava team member"
-              class="w-full h-auto object-cover"
-            />
-            <div class="absolute inset-0 flex items-center justify-center">
-              <button
-                class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-transform"
-                onclick="playVideo()"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="ml-1"
-                >
-                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                </svg>
+              <button th:if="${isAdminView}" sec:authorize="hasRole('ADMIN')" class="edit-toggle-btn" title="Edit text" style="margin-left: 8px; margin-top: 4px;">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.1464 1.14645C12.3417 0.951184 12.6583 0.951184 12.8536 1.14645L14.8536 3.14645C15.0488 3.34171 15.0488 3.65829 14.8536 3.85355L5.85355 12.8536C5.80382 12.9033 5.74215 12.9419 5.675 12.9659L2.32175 14.0873C1.97418 14.1988 1.58825 14.0315 1.47676 13.6839C1.4327 13.5562 1.4327 13.4188 1.47676 13.2911L2.59818 9.93775C2.62225 9.87078 2.66076 9.80938 2.71045 9.75969L11.7109 0.759172C11.9061 0.563905 12.2227 0.563905 12.418 0.759172L12.1464 1.14645ZM13.4393 2.45306L12.4963 1.50983L3.98961 10.0164L4.93284 10.9596L13.4393 2.45306Z" fill="currentColor"/></svg>
               </button>
             </div>
+
+            <div class="edit-form-container" style="display:none;">
+              <form th:action="@{/save-text}" method="POST" class="ajax-save-form">
+                <textarea name="heroText" class="edit-textarea" th:text="${heroText}"></textarea>
+                <div class="clearfix mt-2">
+                  <button type="submit" class="save-btn px-4 py-2 bg-blue-600 text-white rounded">Save</button>
+                  <button type="button" class="cancel-btn px-4 py-2 bg-gray-300 rounded ml-2">Cancel</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <a href="#" class="consult-btn hero-cta">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="19" x2="19" y2="5"></line>
+              <polyline points="9 5 19 5 19 15"></polyline>
+            </svg>
+            <div class="text-wrapper">
+              <span class="sub-text">Ready for a real scale up</span>
+              <span class="main-text">Book a free consultation call</span>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-visual-content">
+        <div class="hero-image-wrapper">
+          <img th:src="@{/images/2c751b74c11f89824bd93039ec2129dd04a31ad0.png}" alt="CTO Building App" class="hero-main-img" />
+          <div class="video-play-btn">
+            <svg width="24" height="28" viewBox="0 0 31 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0.75 31.9106V2.75056C0.749907 2.40139 0.837572 2.05828 1.00428 1.75535C1.17098 1.45242 1.41092 1.20024 1.70022 1.02387C1.98952 0.847509 2.3181 0.753114 2.65329 0.750076C2.98848 0.747038 3.3186 0.835463 3.6108 1.00656L28.494 15.5866C28.7913 15.7604 29.0388 16.0136 29.2111 16.3201C29.3834 16.6266 29.4741 16.9754 29.4741 17.3306C29.4741 17.6857 29.3834 18.0345 29.2111 18.341C29.0388 18.6475 28.7913 18.9007 28.494 19.0746L3.6108 33.6546C3.3186 33.8256 2.98848 33.9141 2.65329 33.911C2.3181 33.908 1.98952 33.8136 1.70022 33.6372C1.41092 33.4609 1.17098 33.2087 1.00428 32.9058C0.837572 32.6028 0.749907 32.2597 0.75 31.9106Z" fill="#070F29" stroke="#070F29" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </header>
 
-    <!-- Services Bar -->
-
-    <!-- CoreCare & DeliveryOS Section -->
-  <section class="relative px-6 md:px-12 py-12 wavy-section" style="z-index: 10;">
-      <!-- Wavy decorative lines (UNCHANGED) -->
-      <div
-        class="absolute left-0 right-0 top-1/2 -translate-y-1/2 pointer-events-none overflow-hidden"
-      >
-        <svg
-          class="w-full h-24"
-          viewBox="0 0 1200 100"
-          preserveAspectRatio="none"
-        >
-          <path
-            d="M0,50 Q150,20 300,50 T600,50 T900,50 T1200,50"
-            stroke="#2563eb"
-            stroke-width="2"
-            fill="none"
-            opacity="0.2"
-          />
-          <path
-            d="M0,60 Q150,30 300,60 T600,60 T900,60 T1200,60"
-            stroke="#8b5cf6"
-            stroke-width="2"
-            fill="none"
-            opacity="0.2"
-          />
-        </svg>
-      </div>
-
-      <!-- CONTENT -->
-      <div class="max-w-7xl mx-auto relative z-10">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- CoreCare Card -->
-          <div class="gradient-border">
-            <div
-              class="gradient-border-inner p-6 flex items-center justify-between"
-            >
-              <div>
-                <h3
-                  style="font-size: 25px !important"
-                  class="font-semibold text-lg text-gradient"
-                >
-                  CoreCare™
-                </h3>
-                <p class="text-sm">Our Post-launch System</p>
-              </div>
-
-              <span class="text-white-400 text-sm"> ℹ️ </span>
-            </div>
-          </div>
-
-          <!-- DeliveryOS Card -->
-          <div class="gradient-border">
-            <div
-              class="gradient-border-inner p-6 flex items-center justify-between"
-            >
-              <div>
-                <h3
-                  style="font-size: 25px !important"
-                  class="font-semibold text-lg text-gradient"
-                >
-                  DeliveryOS
-                </h3>
-                <p class="text-sm">Our step by step delivery process</p>
-              </div>
-
-              <span class="text-white-400 text-sm"> ℹ️ </span>
-            </div>
-          </div>
+  <section class="services-section">
+    <div class="services-container">
+      <div class="service-card">
+        <div class="service-card-inner">
+          <div class="service-content-row"><div class="card-title-group"><span class="service-title">CoreCare</span><span class="service-tm">TM</span></div></div>
+          <div class="service-content-row"><span class="service-subtitle">Our Post-launch System</span><svg class="info-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M20 10C20 15.523 15.523 20 10 20C4.477 20 0 15.523 0 10C0 4.477 4.477 0 10 0C15.523 0 20 4.477 20 10ZM9 6C9 6.26522 9.10536 6.51957 9.29289 6.70711C9.48043 6.89464 9.73478 7 10 7H10.008C10.2732 7 10.5276 6.89464 10.7151 6.70711C10.9026 6.51957 11.008 6.26522 11.008 6C11.008 5.73478 10.9026 5.48043 10.7151 5.29289C10.5276 5.10536 10.2732 5 10.008 5H10C9.73478 5 9.48043 5.10536 9.29289 5.29289C9.10536 5.48043 9 5.73478 9 6ZM10 15C10.2652 15 10.5196 14.8946 10.7071 14.7071C10.8946 14.5196 11 14.2652 11 14V9C11 8.73478 10.8946 8.48043 10.7071 8.29289C10.5196 8.10536 10.2652 8 10 8C9.73478 8 9.48043 8.10536 9.29289 8.29289C9.10536 8.48043 9 8.73478 9 9V14C9 14.2652 9.10536 14.5196 9.29289 14.7071C9.48043 14.8946 9.73478 15 10 15Z" fill="#070F29" fill-opacity="0.5"/></svg></div>
         </div>
       </div>
-    </section>
+      <div class="service-card"><div class="service-card-inner"><div class="service-content-row"><div class="service-title">DeliveryOS</div></div><div class="service-content-row"><span class="service-subtitle">Our step by step delivery process</span><svg class="info-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M20 10C20 15.523 15.523 20 10 20C4.477 20 0 15.523 0 10C0 4.477 4.477 0 10 0C15.523 0 20 4.477 20 10ZM9 6C9 6.26522 9.10536 6.51957 9.29289 6.70711C9.48043 6.89464 9.73478 7 10 7H10.008C10.2732 7 10.5276 6.89464 10.7151 6.70711C10.9026 6.51957 11.008 6.26522 11.008 6C11.008 5.73478 10.9026 5.48043 10.7151 5.29289C10.5276 5.10536 10.2732 5 10.008 5H10C9.73478 5 9.48043 5.10536 9.29289 5.29289C9.10536 5.48043 9 5.73478 9 6ZM10 15C10.2652 15 10.5196 14.8946 10.7071 14.7071C10.8946 14.5196 11 14.2652 11 14V9C11 8.73478 10.8946 8.48043 10.7071 8.29289C10.5196 8.10536 10.2652 8 10 8C9.73478 8 9.48043 8.10536 9.29289 8.29289C9.10536 8.48043 9 8.73478 9 9V14C9 14.2652 9.10536 14.5196 9.29289 14.7071C9.48043 14.8946 9.73478 15 10 15Z" fill="#070F29" fill-opacity="0.5"/></svg></div></div></div>
+    </div>
+  </section>
 
-    <!-- Our Services Section -->
-    <section id="services" class="px-6 md:px-12 py-20">
-      <div class="max-w-6xl mx-auto">
-        <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">
-          Our Services
-        </h2>
+  <section class="our-services-grid">
 
-        <div class="grid md:grid-cols-3 gap-8">
-          <!-- Service Card 1 -->
-          <div
-            class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm card-hover"
-          >
-            <div
-              class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center mb-4"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#2563eb"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <polyline points="16 18 22 12 16 6"></polyline>
-                <polyline points="8 6 2 12 8 18"></polyline>
-              </svg>
-            </div>
-            <h3 class="text-xl font-semibold mb-3">
-              Full Cycle Software Development
-            </h3>
-            <p class="text-gray-500 text-sm leading-relaxed mb-4">
-              We handle everything from planning & architecture to deployment &
-              testing. Our pods build production-ready software with clean code,
-              real timelines, and CTO oversight—no handoffs, no drama.
-            </p>
-            <button style="margin-top: 100px !important;"
-              class="flex items-center gap-2 text-sm text-gray-500 hover:text-java-blue transition-colors group"
-            >
-              <span
-                class="w-8 h-8 rounded-full border border-current flex items-center justify-center group-hover:border-java-blue"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                  <polyline points="12 5 19 12 12 19"></polyline>
-                </svg>
-              </span>
-              Learn more
-            </button>
-          </div>
+    <img src="/images/spiral.png" class="services-spiral-bg" alt="" />
+    <div class="our-services-content">
+      <h2 style="font-size: 36px; font-weight: 700;">Our Services</h2>
+      <div class="grid-container">
 
-          <!-- Service Card 2 -->
-          <div
-            class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm card-hover"
-          >
-            <div
-              class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center mb-4"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#2563eb"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <polyline points="23 4 23 10 17 10"></polyline>
-                <polyline points="1 20 1 14 7 14"></polyline>
-                <path
-                  d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"
-                ></path>
-              </svg>
-            </div>
-            <h3 class="text-xl font-semibold mb-3">
-              Revamping Legacy Software
-            </h3>
-            <p class="text-gray-500 text-sm leading-relaxed mb-4">
-              Legacy holding you back? We refactor, rebuild, and modernize
-              outdated systems into fast, scalable platforms using current
-              frameworks and clean backend architecture that's built to last.
-            </p>
-            <button style="margin-top: 125px !important;"
-              class="flex items-center gap-2 text-sm text-gray-500 hover:text-java-blue transition-colors group"
-            >
-              <span
-                class="w-8 h-8 rounded-full border border-current flex items-center justify-center group-hover:border-java-blue"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                  <polyline points="12 5 19 12 12 19"></polyline>
-                </svg>
-              </span>
-              Learn more
-            </button>
-          </div>
-
-          <!-- Service Card 3 -->
-          <div
-            class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm card-hover"
-          >
-            <div
-              class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center mb-4"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#2563eb"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-              </svg>
-            </div>
-            <h3 class="text-xl font-semibold mb-3">
-              CoreCare™ Software Management
-            </h3>
-            <p class="text-gray-500 text-sm leading-relaxed mb-4">
-              Software doesn't stop at launch—and neither do we. CoreCare™ is
-              our structured post-launch support system that keeps your product
-              stable, secure, and working, with real SLAs and no ghosting.
-            </p>
-            <button style="margin-top: 100px !important;"
-              class="flex items-center gap-2 text-sm text-gray-500 hover:text-java-blue transition-colors group"
-            >
-              <span
-                class="w-8 h-8 rounded-full border border-current flex items-center justify-center group-hover:border-java-blue"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                  <polyline points="12 5 19 12 12 19"></polyline>
-                </svg>
-              </span>
-              Learn more
-            </button>
-          </div>
+        <div class="grid-card">
+          <div class="card-icon-gif" style="background-image: url('/images/0f81b53ff43211fa01280ca03071c242f2957b69.gif');"></div>
+          <h3 class="card-title-lg">Full Cycle Software Development</h3>
+          <p class="card-desc">We handle everything from planning & architecture to deployment & testing. Our pods build production-ready software with clean code, real timelines, and CTO oversight—no handoffs, no drama.</p>
+          <div class="spacer-gap"></div>
+          <a href="#" class="action-btn">
+            <div class="learn-more-component"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.0505 11.471L13.0505 4.47097C12.8575 4.28341 12.5792 4.21301 12.3203 4.28631C12.0614 4.3596 11.8613 4.56545 11.7953 4.82631C11.7293 5.08717 11.8075 5.36341 12.0005 5.55097L17.7105 11.251H4.48047C4.06626 11.251 3.73047 11.5868 3.73047 12.001C3.73047 12.4152 4.06626 12.751 4.48047 12.751H17.7005L12.0005 18.451C11.8575 18.5903 11.7769 18.7814 11.7769 18.981C11.7769 19.1806 11.8575 19.3717 12.0005 19.511C12.1383 19.6556 12.3307 19.7355 12.5305 19.731C12.7295 19.7319 12.9206 19.6526 13.0605 19.511L20.0605 12.511C20.3529 12.2182 20.3529 11.7438 20.0605 11.451L20.0505 11.471Z" fill="#070F29"/></svg></div>
+            <span class="learn-more-text">Learn more</span>
+          </a>
         </div>
-      </div>
-    </section>
 
-    <!-- Who We Serve Section -->
-    <!-- Who We Serve Section -->
-    <section class="px-6 md:px-12 py-20">
-      <div class="max-w-7xl mx-auto">
-        <h2 class="text-3xl md:text-4xl font-bold text-center mb-16">
-          Who we serve?
-        </h2>
-
-        <div class="grid md:grid-cols-4 gap-5">
-          <!-- E-Commerce Card -->
-          <div
-                  class="bg-java-blue text-white rounded-3xl p-7 shadow-lg sector-card"
-                  style="transform: rotate(-3deg)"
-          >
-            <div class="flex items-center gap-2 mb-6">
-              <div
-                      class="w-6 h-6 bg-white/10 rounded-md flex items-center justify-center"
-              >
-                <span class="text-xs font-bold">G</span>
-              </div>
-            </div>
-            <h3 class="text-2xl font-bold mb-4 leading-tight">E-Commerce</h3>
-            <div class="flex flex-wrap gap-2 mb-5">
-          <span class="text-xs px-3 py-1.5 rounded-full bg-white/10"
-          >Transaction Safety</span
-          >
-              <span class="text-xs px-3 py-1.5 rounded-full bg-white/10">99.5%</span>
-              <span class="text-xs px-3 py-1.5 rounded-full bg-white/10"
-              >Payment Gateways</span
-              >
-            </div>
-            <p class="text-sm opacity-90 mb-6 leading-relaxed">
-              Bringing seamless and secure payment processing to boost customer trust and conversion rates.
-            </p>
-            <button
-                    class="flex items-center gap-2 text-sm font-medium hover:gap-3 transition-all"
-            >
-          <span
-                  class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center"
-          >
-            <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-            >
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
-            </svg>
-          </span>
-              Find out how
-            </button>
-          </div>
-
-          <!-- Fintech Card -->
-          <div
-                  class="bg-white text-gray-900 rounded-3xl p-7 shadow-lg border border-gray-100 sector-card"
-                  style="transform: rotate(2deg)"
-          >
-            <div class="flex items-center gap-2 mb-6">
-              <div
-                      class="w-6 h-6 bg-gray-100 rounded-md flex items-center justify-center"
-              >
-                <span class="text-xs font-bold">G</span>
-              </div>
-            </div>
-            <h3 class="text-2xl font-bold mb-4 leading-tight">Fintech</h3>
-            <div class="flex flex-wrap gap-2 mb-5">
-              <span class="text-xs px-3 py-1.5 rounded-full bg-gray-100">Auth</span>
-              <span class="text-xs px-3 py-1.5 rounded-full bg-gray-100">Uptime</span>
-              <span class="text-xs px-3 py-1.5 rounded-full bg-gray-100">Ledgers</span>
-            </div>
-            <p class="text-sm text-gray-600 mb-6 leading-relaxed">
-              We build stable, secure systems built for scale and compliance.
-            </p>
-            <button
-                    class="flex items-center gap-2 text-sm font-medium hover:gap-3 transition-all text-gray-700"
-            >
-          <span
-                  class="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center"
-          >
-            <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-            >
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
-            </svg>
-          </span>
-              Learn more
-            </button>
-          </div>
-
-          <!-- SaaS Founders Card -->
-          <div
-                  class="bg-java-purple text-white rounded-3xl p-7 shadow-lg sector-card"
-                  style="transform: rotate(-2deg)"
-          >
-            <div class="flex items-center gap-2 mb-6">
-              <div
-                      class="w-6 h-6 bg-white/10 rounded-md flex items-center justify-center"
-              >
-                <span class="text-xs font-bold">G</span>
-              </div>
-            </div>
-            <h3 class="text-2xl font-bold mb-4 leading-tight">Saas Founders</h3>
-            <div class="flex flex-wrap gap-2 mb-5">
-              <span class="text-xs px-3 py-1.5 rounded-full bg-white/10">Data Security</span>
-              <span class="text-xs px-3 py-1.5 rounded-full bg-white/10">99.9%</span>
-              <span class="text-xs px-3 py-1.5 rounded-full bg-white/10">Patient Records</span>
-            </div>
-            <p class="text-sm opacity-90 mb-6 leading-relaxed">
-              Ensuring the integrity and confidentiality of patient data with cutting-edge encryption standards.
-            </p>
-            <button
-                    class="flex items-center gap-2 text-sm font-medium hover:gap-3 transition-all"
-            >
-          <span
-                  class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center"
-          >
-            <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-            >
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
-            </svg>
-          </span>
-              Discover our approach
-            </button>
-          </div>
-
-          <!-- EdTech Card -->
-          <div
-                  class="rounded-3xl p-7 shadow-lg sector-card"
-                  style="background-color: #a3e635; transform: rotate(3deg)"
-          >
-            <div class="flex items-center gap-2 mb-6">
-              <div
-                      class="w-6 h-6 bg-black/10 rounded-md flex items-center justify-center"
-              >
-                <span class="text-xs font-bold text-gray-900">G</span>
-              </div>
-            </div>
-            <h3 class="text-2xl font-bold mb-4 text-gray-900 leading-tight">EdTech</h3>
-            <div class="flex flex-wrap gap-2 mb-5">
-          <span
-                  class="text-xs px-3 py-1.5 rounded-full bg-black/10 text-gray-900"
-          >User Engagement</span
-          >
-              <span
-                      class="text-xs px-3 py-1.5 rounded-full bg-black/10 text-gray-900"
-              >95%</span
-              >
-              <span
-                      class="text-xs px-3 py-1.5 rounded-full bg-black/10 text-gray-900"
-              >Learning Analytics</span
-              >
-            </div>
-            <p class="text-sm text-gray-800 mb-6 leading-relaxed">
-              Enhancing student outcomes through personalized learning experiences driven by real-time data.
-            </p>
-            <button
-                    class="flex items-center gap-2 text-sm font-medium hover:gap-3 transition-all text-gray-900"
-            >
-          <span
-                  class="w-7 h-7 rounded-full bg-black/10 flex items-center justify-center"
-          >
-            <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-            >
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
-            </svg>
-          </span>
-              Explore our solutions
-            </button>
-          </div>
+        <div class="grid-card">
+          <div class="card-icon-gif" style="background-image: url('/images/d96b7f681ada8c976bc614fb65280955a01f98f0.gif');"></div>
+          <h3 class="card-title-lg">Revamping Legacy Software</h3>
+          <p class="card-desc">Got old, fragile code slowing you down? We rebuild, refactor, and migrate your legacy systems into modern, maintainable platforms with fresh architecture and zero downtime.</p>
+          <div class="spacer-gap"></div>
+          <a href="#" class="action-btn">
+            <div class="learn-more-component"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.0505 11.471L13.0505 4.47097C12.8575 4.28341 12.5792 4.21301 12.3203 4.28631C12.0614 4.3596 11.8613 4.56545 11.7953 4.82631C11.7293 5.08717 11.8075 5.36341 12.0005 5.55097L17.7105 11.251H4.48047C4.06626 11.251 3.73047 11.5868 3.73047 12.001C3.73047 12.4152 4.06626 12.751 4.48047 12.751H17.7005L12.0005 18.451C11.8575 18.5903 11.7769 18.7814 11.7769 18.981C11.7769 19.1806 11.8575 19.3717 12.0005 19.511C12.1383 19.6556 12.3307 19.7355 12.5305 19.731C12.7295 19.7319 12.9206 19.6526 13.0605 19.511L20.0605 12.511C20.3529 12.2182 20.3529 11.7438 20.0605 11.451L20.0505 11.471Z" fill="#070F29"/></svg></div>
+            <span class="learn-more-text">Learn more</span>
+          </a>
         </div>
+
+        <div class="grid-card">
+          <div class="card-icon-gif" style="background-image: url('/images/a7654ee15d0ef9638929210275e4b4e230f13acd.gif');"></div>
+          <h3 class="card-title-lg">CoreCare<span class="tm-super">TM</span> Software Management</h3>
+          <p class="card-desc">Keep your software running smoothly with our proactive maintenance, monitoring, and support system. We ensure reliability, security, and performance while your team focuses on growth.</p>
+          <div class="spacer-gap"></div>
+          <a href="#" class="action-btn">
+            <div class="learn-more-component"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.0505 11.471L13.0505 4.47097C12.8575 4.28341 12.5792 4.21301 12.3203 4.28631C12.0614 4.3596 11.8613 4.56545 11.7953 4.82631C11.7293 5.08717 11.8075 5.36341 12.0005 5.55097L17.7105 11.251H4.48047C4.06626 11.251 3.73047 11.5868 3.73047 12.001C3.73047 12.4152 4.06626 12.751 4.48047 12.751H17.7005L12.0005 18.451C11.8575 18.5903 11.7769 18.7814 11.7769 18.981C11.7769 19.1806 11.8575 19.3717 12.0005 19.511C12.1383 19.6556 12.3307 19.7355 12.5305 19.731C12.7295 19.7319 12.9206 19.6526 13.0605 19.511L20.0605 12.511C20.3529 12.2182 20.3529 11.7438 20.0605 11.451L20.0505 11.471Z" fill="#070F29"/></svg></div>
+            <span class="learn-more-text">Learn more</span>
+          </a>
+        </div>
+
       </div>
-    </section>
+    </div>
+  </section>
 
+  <section class="who-we-serve-section">
+    <h2 class="section-heading">Who we serve?</h2>
+    <div class="cards-wrapper">
+      <article class="card ecommerce-card"><div class="wallet-box"><img th:src="@{/images/19c3d51934dca5d48bfc694def6f10a712bedd99.gif}" alt="Icon" class="wallet-gif" /></div><div class="text-container"><h3 class="card-heading">E-Commerce</h3><div class="badges-row"><span class="badge">Transaction Safety</span><span class="badge">99.5%</span><span class="badge">Payments</span></div><p class="card-subtext">Delivering seamless and secure payment processing to boost customer trust and conversion rates</p></div><a href="#" class="action-btn"><div class="circle-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.0505 11.471L13.0505 4.47097C12.8575 4.28341 12.5792 4.21301 12.3203 4.28631C12.0614 4.3596 11.8613 4.56545 11.7953 4.82631C11.7293 5.08717 11.8075 5.36341 12.0005 5.55097L17.7105 11.251H4.48047C4.06626 11.251 3.73047 11.5868 3.73047 12.001C3.73047 12.4152 4.06626 12.751 4.48047 12.751H17.7005L12.0005 18.451C11.8575 18.5903 11.7769 18.7814 11.7769 18.981C11.7769 19.1806 11.8575 19.3717 12.0005 19.511C12.1383 19.6556 12.3307 19.7355 12.5305 19.731C12.7295 19.7319 12.9206 19.6526 13.0605 19.511L20.0605 12.511C20.3529 12.2182 20.3529 11.7438 20.0605 11.451L20.0505 11.471Z" fill="#070F29"/></svg></div><span class="btn-text">Find out how</span></a></article>
+      <article class="card startups-card"><div class="wallet-box"><img th:src="@{/images/19c3d51934dca5d48bfc694def6f10a712bedd99.gif}" alt="Icon" class="wallet-gif" /></div><div class="text-container"><h3 class="card-heading">Startups</h3><div class="badges-row"><span class="badge">Auth</span><span class="badge">Uptime</span><span class="badge">Ledgers</span></div><p class="card-subtext">We build stable, secure systems built for scale and compliance</p></div><a href="#" class="action-btn"><div class="circle-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.0505 11.471L13.0505 4.47097C12.8575 4.28341 12.5792 4.21301 12.3203 4.28631C12.0614 4.3596 11.8613 4.56545 11.7953 4.82631C11.7293 5.08717 11.8075 5.36341 12.0005 5.55097L17.7105 11.251H4.48047C4.06626 11.251 3.73047 11.5868 3.73047 12.001C3.73047 12.4152 4.06626 12.751 4.48047 12.751H17.7005L12.0005 18.451C11.8575 18.5903 11.7769 18.7814 11.7769 18.981C11.7769 19.1806 11.8575 19.3717 12.0005 19.511C12.1383 19.6556 12.3307 19.7355 12.5305 19.731C12.7295 19.7319 12.9206 19.6526 13.0605 19.511L20.0605 12.511C20.3529 12.2182 20.3529 11.7438 20.0605 11.451L20.0505 11.471Z" fill="#070F29"/></svg></div><span class="btn-text">Learn more</span></a></article>
+      <article class="card saas-card"><div class="wallet-box"><img th:src="@{/images/19c3d51934dca5d48bfc694def6f10a712bedd99.gif}" alt="Icon" class="wallet-gif" /></div><div class="text-container"><h3 class="card-heading">SaaS Founders</h3><div class="badges-row"><span class="badge">Data Security</span><span class="badge">99.9%</span><span class="badge">Records</span></div><p class="card-subtext">Ensuring the integrity and confidentiality of patient data with cutting-edge encryption</p></div><a href="#" class="action-btn"><div class="circle-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.0505 11.471L13.0505 4.47097C12.8575 4.28341 12.5792 4.21301 12.3203 4.28631C12.0614 4.3596 11.8613 4.56545 11.7953 4.82631C11.7293 5.08717 11.8075 5.36341 12.0005 5.55097L17.7105 11.251H4.48047C4.06626 11.251 3.73047 11.5868 3.73047 12.001C3.73047 12.4152 4.06626 12.751 4.48047 12.751H17.7005L12.0005 18.451C11.8575 18.5903 11.7769 18.7814 11.7769 18.981C11.7769 19.1806 11.8575 19.3717 12.0005 19.511C12.1383 19.6556 12.3307 19.7355 12.5305 19.731C12.7295 19.7319 12.9206 19.6526 13.0605 19.511L20.0605 12.511C20.3529 12.2182 20.3529 11.7438 20.0605 11.451L20.0505 11.471Z" fill="#070F29"/></svg></div><span class="btn-text">Discover our approach</span></a></article>
+      <article class="card edtech-card"><div class="wallet-box"><img th:src="@{/images/19c3d51934dca5d48bfc694def6f10a712bedd99.gif}" alt="Icon" class="wallet-gif" /></div><div class="text-container"><h3 class="card-heading">EdTech</h3><div class="badges-row"><span class="badge">User Engagement</span><span class="badge">95%</span><span class="badge">Analytics</span></div><p class="card-subtext">Enhancing student outcomes through personalized learning experiences driven by data</p></div><a href="#" class="action-btn"><div class="circle-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.0505 11.471L13.0505 4.47097C12.8575 4.28341 12.5792 4.21301 12.3203 4.28631C12.0614 4.3596 11.8613 4.56545 11.7953 4.82631C11.7293 5.08717 11.8075 5.36341 12.0005 5.55097L17.7105 11.251H4.48047C4.06626 11.251 3.73047 11.5868 3.73047 12.001C3.73047 12.4152 4.06626 12.751 4.48047 12.751H17.7005L12.0005 18.451C11.8575 18.5903 11.7769 18.7814 11.7769 18.981C11.7769 19.1806 11.8575 19.3717 12.0005 19.511C12.1383 19.6556 12.3307 19.7355 12.5305 19.731C12.7295 19.7319 12.9206 19.6526 13.0605 19.511L20.0605 12.511C20.3529 12.2182 20.3529 11.7438 20.0605 11.451L20.0505 11.471Z" fill="#070F29"/></svg></div><span class="btn-text">Explore our solutions</span></a></article>
+    </div>
+  </section>
 
-    <!-- Testimonials Section -->
-    <section class="px-6 md:px-12 py-20">
+  <div class="relative w-full bg-transparent overflow-hidden">
+    <img src="/images/spiral.png" alt="" class="absolute right-[-150px] top-[10%] w-[700px] opacity-40 z-0 pointer-events-none" style="transform: scaleX(-1);" />
+
+    <section class="px-6 md:px-12 py-20 relative z-10">
       <div class="max-w-7xl mx-auto">
 
-        <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-900">
           Testimonials
         </h2>
 
-        <!-- ADD TESTIMONIAL (ADMIN ONLY) -->
         <div th:if="${isAdminView}" sec:authorize="hasRole('ADMIN')"
              class="max-w-xl mx-auto mb-12 bg-gray-50 p-6 rounded-xl border">
 
           <form th:action="@{/admin/testimonials/add}" method="post" class="space-y-4">
-        <textarea name="text" placeholder="Testimonial text"
-                  class="w-full p-2 border rounded" required></textarea>
+              <textarea name="text" placeholder="Testimonial text"
+                        class="w-full p-2 border rounded" required="required"></textarea>
 
             <input name="name" placeholder="Name"
-                   class="w-full p-2 border rounded" required />
+                   class="w-full p-2 border rounded" required="required" />
 
             <input name="role" placeholder="Role"
-                   class="w-full p-2 border rounded" required />
+                   class="w-full p-2 border rounded" required="required" />
 
             <input name="company" placeholder="Company"
-                   class="w-full p-2 border rounded" required />
+                   class="w-full p-2 border rounded" required="required" />
 
             <button type="submit"
                     class="bg-purple-600 text-white px-4 py-2 rounded">
@@ -778,34 +641,32 @@
           </form>
         </div>
 
-        <!-- TESTIMONIALS GRID -->
         <div class="grid md:grid-cols-3 gap-8">
 
           <div th:each="t : ${testimonials}"
                class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
 
-            <!-- Stars -->
             <div class="flex gap-1 mb-4">
               <svg th:each="i : ${#numbers.sequence(1,5)}"
                    xmlns="http://www.w3.org/2000/svg"
                    width="16" height="16" viewBox="0 0 24 24"
                    fill="#8b5cf6" stroke="#8b5cf6" stroke-width="2">
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02
-                             12 17.77 5.82 21.02 7 14.14 2 9.27
-                             8.91 8.26 12 2"/>
+                                   12 17.77 5.82 21.02 7 14.14 2 9.27
+                                   8.91 8.26 12 2"/>
               </svg>
             </div>
 
-            <p th:text="${t.text}" class="mb-6"></p>
+            <p th:text="${t.text}" class="mb-6 text-gray-700"></p>
 
             <div class="flex items-center gap-3">
-              <div class="w-12 h-12 rounded-full gradient-bg overflow-hidden">
+              <div class="w-12 h-12 rounded-full gradient-bg overflow-hidden flex-shrink-0">
                 <img src="/images/ceo.jpg"
-                     style="width:100%; height:100%; object-fit:cover;" alt=""/>
+                     style="width:100%; height:100%; object-fit:cover;" alt="" />
               </div>
 
               <div>
-                <p class="font-semibold" th:text="${t.name}"></p>
+                <p class="font-semibold text-gray-900" th:text="${t.name}"></p>
                 <p class="text-sm text-gray-500">
                   <span th:text="${t.role}"></span>,
                   <span th:text="${t.company}"></span>
@@ -813,17 +674,15 @@
               </div>
             </div>
 
-            <!-- ADMIN ACTIONS -->
             <div th:if="${isAdminView}" sec:authorize="hasRole('ADMIN')" class="mt-4 space-y-3">
 
-              <!-- EDIT FORM -->
               <form th:action="@{/admin/testimonials/edit/{id}(id=${t.id})}"
                     method="post"
                     class="space-y-2">
 
-    <textarea name="text"
-              class="w-full border p-2 rounded"
-              th:text="${t.text}"></textarea>
+                  <textarea name="text"
+                            class="w-full border p-2 rounded"
+                            th:text="${t.text}"></textarea>
 
                 <input name="name"
                        class="w-full border p-2 rounded"
@@ -837,12 +696,11 @@
                        class="w-full border p-2 rounded"
                        th:value="${t.company}" />
 
-                <button type="submit" class="text-blue-600">
+                <button type="submit" class="text-blue-600 font-medium">
                   Save
                 </button>
               </form>
 
-              <!-- DELETE FORM (SEPARATE FORM) -->
               <form th:action="@{/admin/testimonials/delete/{id}(id=${t.id})}"
                     method="post">
 
@@ -850,135 +708,39 @@
                        th:name="${_csrf.parameterName}"
                        th:value="${_csrf.token}" />
 
-                <button class="text-red-600">
+                <button type="submit" class="text-red-600 font-medium">
                   Delete
                 </button>
               </form>
 
             </div>
 
-
-            <!--            &lt;!&ndash; ADMIN ACTIONS &ndash;&gt;-->
-<!--            <div th:if="${isAdminView}" sec:authorize="hasRole('ADMIN')" class="mt-4">-->
-
-<!--              &lt;!&ndash; EDIT FORM &ndash;&gt;-->
-<!--              <form th:action="@{/admin/testimonials/edit/{id}(id=${t.id})}"-->
-<!--                    method="post"-->
-<!--                    class="space-y-2">-->
-
-<!--    <textarea name="text"-->
-<!--              class="w-full border p-2 rounded"-->
-<!--              th:text="${t.text}"></textarea>-->
-
-<!--                <input name="name"-->
-<!--                       class="w-full border p-2 rounded"-->
-<!--                       th:value="${t.name}" />-->
-
-<!--                <input name="role"-->
-<!--                       class="w-full border p-2 rounded"-->
-<!--                       th:value="${t.role}" />-->
-
-<!--                <input name="company"-->
-<!--                       class="w-full border p-2 rounded"-->
-<!--                       th:value="${t.company}" />-->
-
-<!--                <div class="flex gap-3">-->
-<!--                  <button type="submit" class="text-blue-600">-->
-<!--                    Save-->
-<!--                  </button>-->
-
-<!--                  &lt;!&ndash; DELETE &ndash;&gt;-->
-<!--                  <form th:action="@{/admin/testimonials/delete/{id}(id=${t.id})}"-->
-<!--                        method="post">-->
-<!--                    <button class="text-red-600">Delete</button>-->
-<!--                  </form>-->
-<!--                </div>-->
-<!--              </form>-->
-
-<!--            </div>-->
           </div>
 
         </div>
       </div>
     </section>
 
-
-
-    <!-- Call to Action Section -->
-    <section class="px-6 md:px-12 py-20">
-      <div class="max-w-7xl mx-auto">
-        <div
-          class="gra-bg rounded-3xl p-12 text-center relative overflow-hidden"
-        >
-          <!-- Background pattern -->
-          <div class="absolute inset-0 opacity-10">
-            <div
-              class="absolute top-4 left-4 w-24 h-24 border border-white rounded-full"
-            ></div>
-            <div
-              class="absolute bottom-4 right-4 w-32 h-32 border border-white rounded-full"
-            ></div>
-            <div
-              class="absolute top-1/2 left-1/4 w-16 h-16 border border-white rounded-full"
-            ></div>
+    <section class="bottom-cta-section relative z-10">
+      <div class="bottom-cta-container">
+        <h2 class="bottom-cta-title">Ready to take your software to<br />the next level?</h2>
+        <a href="#" class="consult-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="19" x2="19" y2="5"></line>
+            <polyline points="9 5 19 5 19 15"></polyline>
+          </svg>
+          <div class="text-wrapper">
+            <span class="sub-text" style="color: #FFFFFF;">Ready for a real scale up</span>
+            <span class="main-text" style="color: #FFFFFF;">Book a free consultation call</span>
           </div>
-
-          <div class="relative z-10">
-            <h2 class="text-3xl md:text-4xl font-bold mb-8">
-              Ready to take your software to<br />the next level?
-            </h2>
-            <button
-              style="
-                background: linear-gradient(90deg, #255bec 0%, #780aff 100%);
-              "
-              class="text-white px-8 py-4 rounded-full font-medium inline-flex items-center gap-3 hover:opacity-90 transition-opacity shadow-lg"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path
-                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
-                ></path>
-              </svg>
-              <div class="text-left">
-                <p class="text-xs opacity-70">Ready for a free call up</p>
-                <p class="font-semibold">Book a free consultation call</p>
-              </div>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </button>
-          </div>
-        </div>
+        </a>
       </div>
     </section>
 
-    <!-- Newsletter Section -->
-    <section class="px-6 md:px-12 py-12">
-      <div
-        class="max-w-7xl mx-auto w-full flex flex-col md:flex-row items-center justify-between gap-6"
-      >
+    <section class="px-6 md:px-12 py-12 relative z-10">
+      <div class="max-w-7xl mx-auto w-full flex flex-col md:flex-row items-center justify-between gap-6">
         <div>
-          <h3 class="font-semibold text-lg">
+          <h3 class="font-semibold text-lg text-gray-900">
             Stay in the loop. Get product updates,
           </h3>
           <p class="text-gray-500">
@@ -988,181 +750,166 @@
 
         <div class="flex items-center gap-3 flex-wrap">
           <div class="relative">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-            >
-              <path
-                d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
-              ></path>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
               <polyline points="22,6 12,13 2,6"></polyline>
             </svg>
-            <input
-              style="background-color: #eef2f7 !important"
-              type="email"
-              placeholder="Enter your email"
-              class="pl-12 pr-4 py-3 rounded-full border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-java-blue w-64"
-            />
+            <input style="background-color: #eef2f7 !important" type="email" placeholder="Enter your email" class="pl-12 pr-4 py-3 rounded-full border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-java-blue w-64 text-gray-900" />
           </div>
-          <button
-            style="background: linear-gradient(90deg, #255bec 0%, #780aff 100%)"
-            class="text-white px-6 py-3 rounded-full font-medium inline-flex items-center gap-2 hover:opacity-90 transition-opacity"
-          >
+          <button style="background: linear-gradient(90deg, #255bec 0%, #780aff 100%)" class="text-white px-6 py-3 rounded-full font-medium inline-flex items-center gap-2 hover:opacity-90 transition-opacity">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.7896 0.0744176C18.8056 -0.280582 19.7816 0.695418 19.4266 1.71142L13.5016 18.6414C13.1166 19.7394 11.5866 19.8014 11.1146 18.7384L8.25561 12.3064L12.2796 8.28142C12.4121 8.13924 12.4842 7.9512 12.4808 7.7569C12.4774 7.56259 12.3986 7.37721 12.2612 7.2398C12.1238 7.10238 11.9384 7.02367 11.7441 7.02024C11.5498 7.01681 11.3618 7.08894 11.2196 7.22142L7.19461 11.2454L0.762611 8.38642C-0.300389 7.91342 -0.23739 6.38442 0.85961 5.99942L17.7896 0.0744176Z" fill="#F5F5F5"/></svg>
             Subscribe
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
-            </svg>
           </button>
         </div>
       </div>
     </section>
-    <hr class="horlin" />
 
-    <!-- Footer -->
-    <footer class="px-6 md:px-12 py-12 border-t border-gray-100">
-      <div class="max-w-7xl mx-auto">
-        <div class="grid md:grid-cols-5 gap-8 mb-12">
-          <div class="md:col-span-2">
-            <img
-              style="height: 30px; margin-bottom: 8px"
-              src="/images/justjlogo.png"
-              alt=""
-              srcset=""
-            />
-            <p class="text-gray-500 text-sm">
-              Just Results. Just Structure. JustJava.
-            </p>
-          </div>
+  </div>
+</div>
+<footer class="px-6 md:px-12 py-12 relative z-10 bg-[#F8F9FB]">
+  <div class="max-w-7xl mx-auto flex flex-col h-full justify-between" style="min-height: 250px;">
 
-          <div>
-            <h4 class="font-semibold mb-4">Services</h4>
-            <ul class="space-y-2">
-              <li>
-                <a
-                  href="#"
-                  class="text-gray-500 text-sm hover:text-gray-900 transition-colors"
-                  >Documentation</a
-                >
-              </li>
-              <li>
-                <a
-                  href="#"
-                  class="text-gray-500 text-sm hover:text-gray-900 transition-colors"
-                  >Papers</a
-                >
-              </li>
-              <li>
-                <a
-                  href="#"
-                  class="text-gray-500 text-sm hover:text-gray-900 transition-colors"
-                  >Press Conferences</a
-                >
-              </li>
-            </ul>
-          </div>
+    <div class="flex flex-col md:flex-row justify-between items-end w-full mb-12 gap-12">
 
-          <div>
-            <h4 class="font-semibold mb-4">Services</h4>
-            <ul class="space-y-2">
-              <li>
-                <a
-                  href="#"
-                  class="text-gray-500 text-sm hover:text-gray-900 transition-colors"
-                  >Documentation</a
-                >
-              </li>
-              <li>
-                <a
-                  href="#"
-                  class="text-gray-500 text-sm hover:text-gray-900 transition-colors"
-                  >Papers</a
-                >
-              </li>
-              <li>
-                <a
-                  href="#"
-                  class="text-gray-500 text-sm hover:text-gray-900 transition-colors"
-                  >Press Conferences</a
-                >
-              </li>
-            </ul>
-          </div>
+      <div class="flex flex-col items-start w-full md:w-auto">
+        <img style="height: 30px; margin-bottom: 8px" src="/images/justjlogo.png" alt="JustJava" />
+        <p class="text-[#7E828F] font-['Creato_Display'] text-sm">Just Results. Just Structure. JustJava.</p>
+      </div>
 
-          <div>
-            <h4 class="font-semibold mb-4">Resources</h4>
-            <ul class="space-y-2">
-              <li>
-                <a
-                  href="#"
-                  class="text-gray-500 text-sm hover:text-gray-900 transition-colors"
-                  >Documentation</a
-                >
-              </li>
-              <li>
-                <a
-                  href="#"
-                  class="text-gray-500 text-sm hover:text-gray-900 transition-colors"
-                  >Papers</a
-                >
-              </li>
-              <li>
-                <a
-                  href="#"
-                  class="text-gray-500 text-sm hover:text-gray-900 transition-colors"
-                  >Press Conferences</a
-                >
-              </li>
-            </ul>
-          </div>
+      <div class="flex flex-wrap gap-12 md:gap-32 font-['Creato_Display'] w-full md:w-auto">
+        <div>
+          <h4 class="font-semibold mb-4 text-gray-900">Services</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-[#7E828F] text-sm hover:text-gray-900 transition-colors">Documentation</a></li>
+            <li><a href="#" class="text-[#7E828F] text-sm hover:text-gray-900 transition-colors">Papers</a></li>
+            <li><a href="#" class="text-[#7E828F] text-sm hover:text-gray-900 transition-colors">Press Conferences</a></li>
+          </ul>
         </div>
-
-        <hr class="horlin2" />
-
-        <div
-          class="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 border-t border-gray-100"
-        >
-          <p class="text-gray-500 text-sm">© 2025 JustJava</p>
-          <div class="flex items-center gap-6">
-            <a
-              href="#"
-              class="text-gray-500 text-sm hover:text-gray-900 transition-colors"
-              >Terms of Service</a
-            >
-            <a
-              href="#"
-              class="text-gray-500 text-sm hover:text-gray-900 transition-colors"
-              >Privacy Policy</a
-            >
-            <a
-              href="#"
-              class="text-gray-500 text-sm hover:text-gray-900 transition-colors"
-              >Cookies</a
-            >
-          </div>
+        <div>
+          <h4 class="font-semibold mb-4 text-gray-900">Services</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-[#7E828F] text-sm hover:text-gray-900 transition-colors">Documentation</a></li>
+            <li><a href="#" class="text-[#7E828F] text-sm hover:text-gray-900 transition-colors">Papers</a></li>
+            <li><a href="#" class="text-[#7E828F] text-sm hover:text-gray-900 transition-colors">Press Conferences</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-semibold mb-4 text-gray-900">Resources</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-[#7E828F] text-sm hover:text-gray-900 transition-colors">Documentation</a></li>
+            <li><a href="#" class="text-[#7E828F] text-sm hover:text-gray-900 transition-colors">Papers</a></li>
+            <li><a href="#" class="text-[#7E828F] text-sm hover:text-gray-900 transition-colors">Press Conferences</a></li>
+          </ul>
         </div>
       </div>
-    </footer>
+    </div>
 
- <script src="/js/script.js"></script>
-  </body>
+    <hr class="border-gray-200" />
+
+    <div class="flex flex-col md:flex-row items-center justify-between gap-4 pt-6 font-['Creato_Display']">
+      <p class="text-[#7E828F] text-sm">© 2026 JustJava</p>
+      <div class="flex items-center gap-6">
+        <a href="#" class="text-[#7E828F] text-sm hover:text-gray-900 transition-colors">Terms of Service</a>
+        <a href="#" class="text-[#7E828F] text-sm hover:text-gray-900 transition-colors">Privacy Policy</a>
+        <a href="#" class="text-[#7E828F] text-sm hover:text-gray-900 transition-colors">Cookies</a>
+      </div>
+    </div>
+
+  </div>
+</footer>
+
+<th:block layout:fragment="page_scripts">
+  <script>
+    function toggleMobileMenu() {
+      const hamburgerIcon = document.getElementById('icon-hamburger');
+      const closeIcon = document.getElementById('icon-close');
+      const mobileMenu = document.getElementById('mobileMenuDropdown');
+
+      if (hamburgerIcon.style.display !== 'none') {
+        hamburgerIcon.style.display = 'none';
+        closeIcon.style.display = 'block';
+        mobileMenu.style.display = 'block';
+      } else {
+        hamburgerIcon.style.display = 'block';
+        closeIcon.style.display = 'none';
+        mobileMenu.style.display = 'none';
+      }
+    }
+
+    const slot1Words = ['Start-ups', 'Fintechs', 'CTO\'s'];
+    let slot1Index = 0;
+    setInterval(() => {
+        slot1Index = (slot1Index + 1) % slot1Words.length;
+        const slot1 = document.getElementById('slot-1');
+        if(slot1) {
+            slot1.textContent = slot1Words[slot1Index];
+            slot1.classList.remove('fade-in');
+            void slot1.offsetWidth;
+            slot1.classList.add('fade-in');
+        }
+    }, 2400);
+
+    const slot2Data = [
+        { gif: '/images/e5a2be47d967bbb5c7c3bdaa2786f74e154ade0b (2).gif', text: 'Build' },
+        { gif: '/images/1ba5cc6aa13a9cf9fa0a7c7901c827bcd4c88f50.gif', text: 'Scale' },
+        { gif: '/images/9781f34f8e81dd5d4b677e993365f11066a2fc30.gif', text: 'Optimize' },
+        { gif: '/images/0515c18c2deb122f56f5dd59b13fc85053c218d9.gif', text: 'Launch' }
+    ];
+    let slot2Index = 0;
+    const slot2GifElement = document.getElementById('slot-gif');
+    const slot2TextElement = document.getElementById('slot-2');
+    function animateSlot2() {
+        if(slot2GifElement && slot2TextElement) {
+            slot2GifElement.style.opacity = '0';
+            slot2TextElement.style.opacity = '0';
+            setTimeout(() => {
+                slot2Index = (slot2Index + 1) % slot2Data.length;
+                slot2GifElement.src = slot2Data[slot2Index].gif;
+                slot2TextElement.textContent = slot2Data[slot2Index].text;
+                slot2GifElement.style.opacity = '1';
+                slot2TextElement.style.opacity = '1';
+            }, 300);
+        }
+    }
+    setInterval(animateSlot2, 2800);
+
+    const slot3Words = ['MVPs', 'Software', 'Apps', 'Workflows'];
+    let slot3Index = 0;
+    setInterval(() => {
+        slot3Index = (slot3Index + 1) % slot3Words.length;
+        const slot3 = document.getElementById('slot-3');
+        if(slot3) {
+            slot3.textContent = slot3Words[slot3Index];
+            slot3.classList.remove('fade-in');
+            void slot3.offsetWidth;
+            slot3.classList.add('fade-in');
+        }
+    }, 3200);
+
+    const editHeroBtn = document.getElementById('edit-hero-btn');
+    if(editHeroBtn) {
+        editHeroBtn.addEventListener('click', function() {
+            const newText = prompt('Edit the Build text:', 'Build');
+            if (newText !== null && newText.trim() !== '') {
+                document.getElementById('slot-2').textContent = newText.trim();
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        $('.edit-toggle-btn').on('click', function() {
+            var wrapper = $(this).closest('.editable-wrapper');
+            wrapper.find('.display-view').hide();
+            wrapper.find('.edit-form-container').fadeIn();
+        });
+
+        $('.cancel-btn').on('click', function() {
+            var wrapper = $(this).closest('.editable-wrapper');
+            wrapper.find('.edit-form-container').hide();
+            wrapper.find('.display-view').fadeIn();
+        });
+    });
+  </script>
+</th:block>
+</body>
 </html>
-
