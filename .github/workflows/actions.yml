@@ -24,7 +24,7 @@ jobs:
 
       - name: Build jar and push to Docker Hub
         id: jib-build
-        run: mvn clean compile jib:build
+        run: mvn clean compile jib:build -Dimage=kazeemakinrinde/justjavasite:${{ github.sha }}
 
       # Install Railway CLI
       - name: Install Railway CLI
