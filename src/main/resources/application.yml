@@ -31,7 +31,7 @@ spring:
     # password: ncb4sm1yhnq91t0s1o4e0m8z5j7smfhm
     url: ${JDBC_DATABASE_URL:jdbc:postgresql://localhost:5432/bluepay}
     username: ${JDBC_DATABASE_USERNAME:postgres}
-    password: ${JDBC_DATATBASE_PASSWORD}
+    password: ${JDBC_DATATBASE_PASSWORD:1234}
     driver-class-name: org.postgresql.Driver
     hikari:
       connection-timeout: 30000
