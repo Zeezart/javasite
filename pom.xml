@@ -106,6 +106,9 @@
                     </from>
                     <to>
                         <image>kazeemakinrinde/justjavasite</image>
+						<tags>
+					      <tag>latest</tag>
+					    </tags>
                         <auth>
                             <username>kazeemakinrinde</username>
                             <password>020775Rashy!</password>
