@@ -24,8 +24,7 @@ jobs:
 
       - name: Build jar and push to Docker Hub
         id: jib-build
-        run: mvn clean compile jib:build
-
+        run: mvn clean compile jib:build -Dimage=kazeemakinrinde/justjavasite:latest
       # Install Railway CLI
       - name: Install Railway CLI
         run: npm install -g @railway/cli@latest
@@ -43,7 +42,7 @@ jobs:
           RAILWAY_PROJECT_ID: 7edc707c-73e3-4b8b-915b-019e9d0b6114
           RAILWAY_SERVICE_ID: justjavasite
         run: |
-          IMAGE_REF="kazeemakinrinde/justjavasite:latest"
+          IMAGE_REF=kazeemakinrinde/justjavasite:latest
           echo "Updating service image to: $IMAGE_REF"
           railway variables --set "RAILWAY_SERVICE_IMAGE=$IMAGE_REF" --service $RAILWAY_SERVICE_ID
 
