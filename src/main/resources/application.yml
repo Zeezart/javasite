@@ -53,14 +53,14 @@ spring:
         # 1. THE PROVIDER (Where Keycloak lives)
         provider:
           keycloak:
-            issuer-uri: https://keycloak-production-f3ed.up.railway.app/realms/usersrealm
+            issuer-uri: ${ISSUER_URI:https://ngcloak-production.up.railway.app/realms/justjavasite}
 
         # 2. THE REGISTRATION (Your App's Identity)
         registration:
           keycloak:
             provider: keycloak
-            client-id: users
-            client-secret: FcLFduxLqkUwY0C89mGkO3eTIfDg1toj
+            client-id: justjavasite
+            client-secret: BchHGsG48vXZrhQrrhkMlOIC3IIHrkd5
             authorization-grant-type: authorization_code
             scope: openid,profile,email
 
