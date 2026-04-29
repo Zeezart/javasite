@@ -312,12 +312,12 @@
         }
 
         .hero-text-content {
-            padding: 0 24px;
-            text-align: left; /* Left alignment enforced */
+            padding: 0 !important; /* Removed padding */
+            text-align: left; 
         }
 
         .hero-headline {
-            font-size: 34px !important; /* Reduced to align perfectly with line breaks */
+            font-size: 40px !important; /* Increased text size */
             line-height: 1.2;
             text-align: left !important;
         }
@@ -325,40 +325,40 @@
         .hero-sub-action {
             display: flex;
             flex-direction: column;
-            align-items: flex-start; /* Subtext wrapper aligns left */
+            align-items: flex-start; 
             width: 100%;
         }
 
         .hero-subtext {
             font-size: 16px;
-            text-align: left !important; /* Left alignment enforced */
+            text-align: left !important; 
             display: block;
         }
 
         .consult-btn.hero-cta {
-            align-self: center !important; /* Forces the button to center */
+            align-self: center !important; 
             margin-top: 32px;
-            padding: 10px 24px !important; /* Moderate size */
+            padding: 10px 24px !important; 
             width: auto;
             min-width: 250px;
             justify-content: center;
             position: relative;
-            z-index: 10; /* Keeps button above background vector */
+            z-index: 10; 
         }
 
         .hero-bg-vector {
-            top: 420px !important; /* Lowered perfectly behind the CTA button */
+            top: 420px !important; 
             height: 120%;
             z-index: -1;
         }
 
         .hero-visual-content {
-            margin-top: 50px; /* More spacing before the visual content */
+            margin-top: 50px; 
             display: flex;
             justify-content: center;
             align-items: center;
             width: 100%;
-            padding: 0 8px; /* Reduced padding to allow image to span wider */
+            padding: 0 8px; 
         }
 
         .hero-image-wrapper {
@@ -366,20 +366,52 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 100%;
-            background: transparent !important; /* Removes white frame */
+            width: 100%; 
+            background: transparent !important; 
             border: none !important;
             box-shadow: none !important;
             padding: 0 !important;
         }
 
         .hero-main-img {
-            width: 108%; /* Increased image size */
-            max-width: 108%;
-            margin-left: -4%; /* Centers the larger image */
-            height: auto;
+            width: 100%; 
+            max-width: 100%;
+            height: 320px; /* Increased explicit height */
+            object-fit: cover; /* Ensures image isn't stretched weirdly */
             display: block;
-            border-radius: 16px;
+            border-radius: 20px !important; /* Border radius matching desktop aesthetics */
+            margin: 0 auto;
+        }
+
+        /* --- MOBILE SPECIFIC SERVICES BOXES FIXES --- */
+        .services-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            padding: 0 16px;
+            gap: 16px;
+        }
+
+        .service-card {
+            width: 100% !important; /* Increased width to span full mobile screen */
+            max-width: 100% !important;
+        }
+
+        .service-card-inner {
+            padding: 24px !important; /* Adding padding inside the cards */
+        }
+
+        .service-title {
+            font-size: 26px !important; /* Increased text size for title */
+        }
+
+        .service-subtitle {
+            font-size: 18px !important; /* Increased text size for subtitle */
+        }
+        
+        .info-icon {
+            width: 24px !important;
+            height: 24px !important;
         }
     }
   </style>
